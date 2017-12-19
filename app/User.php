@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->getName() ?: $this->username;
     }
+
+    public function isActive()
+    {
+        return ($this->active ? 'True' : 'False');
+    }
 }

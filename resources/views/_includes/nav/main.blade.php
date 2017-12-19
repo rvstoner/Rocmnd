@@ -23,8 +23,7 @@
       <div class="navbar-start">
         @auth
           @role('serveradministrator|payrollmanager|director|assistantdirector|administrator')
-            {{-- <a href="{{route('manage.dashboard')}}" class="navbar-item"> --}}
-            <a href="#" class="navbar-item">
+            <a href="{{route('manage.dashboard')}}" class="navbar-item">
               Dashboard
             </a>
           @endrole
@@ -80,8 +79,7 @@
               </a>
               @auth
                 @role('serveradministrator|payrollmanager|director|assistantdirector|administrator')
-                  {{-- <a href="{{route('manage.dashboard')}}" class="navbar-item"> --}}
-                  <a href="#" class="navbar-item">
+                  <a href="{{route('manage.dashboard')}}" class="navbar-item">
                     <span class="icon">
                       <i class="fa fa-fw fa-cog m-r-5"></i>
                     </span>Manage
