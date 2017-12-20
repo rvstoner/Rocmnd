@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use App\User;
-use App\Role;
+
 use DB;
-use LaraFlash;
 use Hash;
 use Input;
+use LaraFlash;
+use App\{User, Role};
+use Illuminate\Http\Request;
+use App\Models\Payroll\Team;
 use App\Models\User\TempPassword;
 class UserController extends Controller
 {
@@ -29,7 +30,8 @@ class UserController extends Controller
     public function create()
     {
       $roles = Role::all();
-      return view('manage.users.create')->withRoles($roles);
+      $teams = Team::all();
+      return view('manage.users.create', compact('roles', 'teams'));
     }
     /**
      * Store a newly created resource in storage.
@@ -56,15 +58,21 @@ class UserController extends Controller
         }
         $password = $str;
       }
+      if(!empty($request->team)){
+        $team = $request->team;
+      }else{
+        $team = auth()->user()->team_id;
+      }
       $user = new User();
       $user->username = $request->username;
+      $user->team_id = $team;
       $user->email = $request->email;
       $user->password = Hash::make($password);
       $user->save();
-      $tempPassword = TempPassword::updateOrCreate(
-            ['user_id' => $user->id],
-            ['password' => $str]
-        );
+      // $tempPassword = TempPassword::updateOrCreate(
+      //       ['user_id' => $user->id],
+      //       ['password' => $str]
+      //   );
       if ($request->roles) {
         $user->syncRoles(explode(',', $request->roles));
       }
@@ -109,6 +117,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+
       $this->validateWith([
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
@@ -144,7 +153,7 @@ class UserController extends Controller
       $user->save();
 
       $user->syncRoles(explode(',', $request->roles));
-      LaraFlash::new()->content('Successfully updated '$user->getNameOrUsername()'.')->type('success')->priority(5);
+      LaraFlash::new()->content('Successfully updated user.')->type('success')->priority(5);
       return redirect()->route('users.show', $id);
       // if () {
       //   return redirect()->route('users.show', $id);

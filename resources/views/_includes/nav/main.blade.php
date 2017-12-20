@@ -37,13 +37,13 @@
           <a href="{{route('login')}}" class="navbar-item is-tab">Login</a>
           {{-- <a href="{{route('register')}}" class="navbar-item is-tab">Join Rocmnd</a> --}}
         @else
-          {{-- @if (Auth::user()->isClockedIn())        
+          @if (Auth::user()->isClockedIn())        
               <form class="navbar-item" role="form" method="POST" action="{{ route('clockout') }}">
                   {{ csrf_field() }}           
                   <input class="button is-primary" type="submit" value="Clock Out">
               </form>
-          @else    --}}     
-              {{-- <form class="navbar-item" role="form" method="POST" action="{{ route('timesheets.store') }}">
+          @else        
+              <form class="navbar-item" role="form" method="POST" action="{{ route('clockin') }}">
                 {{ csrf_field() }}
                 <div class="field has-addons"> 
                   <div class="control">
@@ -62,7 +62,7 @@
                   </div>
                 </div>
               </form>                    
-          @endif --}}
+          @endif
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">Welcome {{Auth::user()->getNameOrUsername()}}</a>
             <div class="navbar-dropdown is-right" >

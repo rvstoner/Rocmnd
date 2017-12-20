@@ -1,23 +1,32 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Dashboard</div>
 
-                <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
-                </div>
-            </div>
-        </div>
+<section class="section">
+    <div class="container">
+        <h1 class="title">Home</h1>
     </div>
-</div>
+</section>
+<section class="section">
+    <article class="message is-info">
+        <div class="message-header">
+            <p>CPR Trainning {{ Carbon\Carbon::now()->addDays(2)->diffForHumans() }}</p>
+            <button class="delete" aria-label="delete"></button>
+        </div>
+        <div class="message-body">
+            <strong>{{ Carbon\Carbon::now()->addDays(2)->toDayDateTimeString() }}</strong><br>
+            Some message about the meeting.
+        </div>
+    </article>
+    <article class="message is-info">
+        <div class="message-header">
+            <p>ALL STAFF MEETING {{ Carbon\Carbon::now()->addHours(2)->diffForHumans() }}</p>
+            <button class="delete" aria-label="delete"></button>
+        </div>
+        <div class="message-body">
+            <strong>{{ Carbon\Carbon::now()->addHours(2)->toDayDateTimeString() }}</strong><br>
+            Some message about the meeting.
+        </div>
+    </article>
+</section>
 @endsection

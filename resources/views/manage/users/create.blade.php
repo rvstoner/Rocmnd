@@ -12,6 +12,23 @@
       {{csrf_field()}}
       <div class="columns">
         <div class="column">
+
+          @permission('create-facilities')
+          <div class="field">
+            <label for="team" class="label">Facility</label>
+            <p class="control">
+              <div class="select is-rounded is-fullwidth">
+                <select name="team">
+                  <option value="">Choose a Facility</option>
+                  @foreach($teams as $team)
+                    <option value="{{$team->id}}">{{$team->display_name}}</option>
+                  @endforeach
+                </select>
+              </div>            
+            </p>
+          </div>
+          @endpermission
+
           <div class="field">
             <label for="name" class="label">Username</label>
             <p class="control">

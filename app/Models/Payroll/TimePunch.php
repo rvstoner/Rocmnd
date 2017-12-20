@@ -52,5 +52,12 @@ class TimePunch extends Model
 
         return $roundedTime;
     }
+/**
+     * Used to round times to the nearest 15 minutes.
+     */
+    public static function getShiftDate($time)
+    {
+        return 1;
+    }
 
 }

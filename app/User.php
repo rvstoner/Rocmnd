@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Payroll\TimePunch;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -83,5 +84,24 @@ class User extends Authenticatable
     public function isActive()
     {
         return ($this->active ? 'True' : 'False');
+    }
+
+    public function timepunches()
+    {
+        return $this->hasMany('App\Models\Payroll\TimePunch');
+    }
+
+    public function isClockedIn()
+    {
+        if (!is_null($this->latestTimePunch) && $this->latestTimePunch->clock_out === NULL)
+        {
+            return true;
+        }
+            return false;
+    }
+
+    public function latestTimePunch()
+    {
+        return $this->hasOne('App\Models\Payroll\TimePunch')->latest('shift_date');
     }
 }

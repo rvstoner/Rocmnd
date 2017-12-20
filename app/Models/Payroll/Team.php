@@ -3,6 +3,7 @@
 namespace App\Models\Payroll;
 
 use App\User;
+use App\Models\Payroll\Shift;
 use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
@@ -16,6 +17,11 @@ class Team extends Model
     public function users()
     {
         return $this->hasMany('App\User');
+    }
+
+    public function shifts()
+    {
+        return $this->hasMany('App\Models\Payroll\Shift');
     }
 
 }
