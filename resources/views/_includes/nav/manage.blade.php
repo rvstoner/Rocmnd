@@ -34,6 +34,12 @@
           @endrole
         </ul>
       </li>
+       <li>
+        <a class="has-submenu {{Nav::hasSegment(['Facilities'], 2)}}">Payroll</a>
+        <ul class="submenu">
+          <li><a href="{{route('facilities.index')}}" class="{{Nav::isResource('permissions')}}">Facilities</a></li>
+        </ul>
+      </li>
     </ul>
   </aside>
 </div>

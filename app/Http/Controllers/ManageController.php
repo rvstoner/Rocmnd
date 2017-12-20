@@ -18,7 +18,7 @@ class ManageController extends Controller
     public function clockedin()
     {
 		$users = User::hasSameTeam()->onShift()->get();
-		
+        
 		return view('manage.onshift')->withUsers($users);
     }
 }

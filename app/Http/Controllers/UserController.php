@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Role;
 use DB;
-use Session;
+use LaraFlash;
 use Hash;
 use Input;
 use App\Models\User\TempPassword;
@@ -68,6 +68,7 @@ class UserController extends Controller
       if ($request->roles) {
         $user->syncRoles(explode(',', $request->roles));
       }
+      LaraFlash::new()->content('Successfully created the new a new User.')->type('success')->priority(5);
       return redirect()->route('users.show', $user->id);
       // if () {
       //
@@ -143,6 +144,7 @@ class UserController extends Controller
       $user->save();
 
       $user->syncRoles(explode(',', $request->roles));
+      LaraFlash::new()->content('Successfully updated '$user->getNameOrUsername()'.')->type('success')->priority(5);
       return redirect()->route('users.show', $id);
       // if () {
       //   return redirect()->route('users.show', $id);

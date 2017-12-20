@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Permission;
 use App\Role;
-use Session;
+use LaraFlash;
 class PermissionController extends Controller
 {
     /**
@@ -65,7 +65,7 @@ class PermissionController extends Controller
             $permission->save();
             $serveradministrator->attachPermission($permission);
           }
-          Session::flash('success', 'Permissions were all successfully added');
+          LaraFlash::new()->content('Permissions were all successfully added.')->title('Welcome')->type('success')->priority(5);
           return redirect()->route('permissions.index');
         }
       } else {
@@ -111,7 +111,7 @@ class PermissionController extends Controller
       $permission->display_name = $request->display_name;
       $permission->description = $request->description;
       $permission->save();
-      Session::flash('success', 'Updated the '. $permission->display_name . ' permission.');
+      LaraFlash::new()->content('Updated the '. $permission->display_name . ' permission.')->type('success')->priority(5);
       return redirect()->route('permissions.show', $id);
     }
     /**

@@ -4,7 +4,7 @@
   <div class="flex-container">
     <div class="columns m-t-10">
       <div class="column">
-        <h1 class="title">Edit {{$role->display_name}}</h1>
+          <h1 class="title">Edit {{$role->display_name}}</h1>
       </div>
     </div>
     <hr class="m-t-0">
@@ -54,8 +54,8 @@
                     <div class="field is-grouped is-grouped-multiline">
                       @foreach ($permissions as $permission)
                         <p class="control">
-                          @permission($permission->name)
-                            <b-checkbox v-model="permissionsSelected" :native-value="{{$permission->id}}">{{$permission->display_name}} <em>({{$permission->description}})</em></b-checkbox>
+                          @permission(strtolower($permission->name))
+                            <b-checkbox v-model="permissionsSelected" :native-value="{{$permission->id}}">{{$permission->display_name}} <em>({{$permission->description}})</em> {{$permission->name}}</b-checkbox>
                           @endpermission
                         </p>
                       @endforeach

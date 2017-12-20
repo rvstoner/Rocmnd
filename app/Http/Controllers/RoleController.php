@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Role;
 use App\Permission;
-use Session;
+use LaraFlash;
 class RoleController extends Controller
 {
 
@@ -53,8 +53,8 @@ class RoleController extends Controller
       $role->save();
       if ($request->permissions) {
         $role->syncPermissions(explode(',', $request->permissions));
-      }
-      Session::flash('success', 'Successfully created the new '. $role->display_name . ' role in the database.');
+      }      
+      LaraFlash::new()->content('Successfully created the new '. $role->display_name . ' role in the database.')->type('success')->priority(5);
       return redirect()->route('roles.show', $role->id);
     }
     /**
@@ -100,7 +100,7 @@ class RoleController extends Controller
       if ($request->permissions) {
         $role->syncPermissions(explode(',', $request->permissions));
       }
-      Session::flash('success', 'Successfully update the '. $role->display_name . ' role in the database.');
+      LaraFlash::new()->content('Successfully update the '. $role->display_name . ' role in the database.')->type('success')->priority(5);
       return redirect()->action('RoleController@index');
     }
     /**
