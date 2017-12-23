@@ -75,7 +75,9 @@ class ShiftController extends Controller
      */
     public function edit($id)
     {
-        //
+        $shift = Shift::findOrFail($id);
+
+        return view('manage.shifts.edit', compact('shift'));
     }
 
     /**
@@ -87,7 +89,21 @@ class ShiftController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validateWith([
+            'shift_start' => 'required',
+            'shift_end' => 'required',
+            'shift' => 'required',
+        ]);
+
+        $shift = Shift::findOrFail($id);
+        $shift->shift_start = $shift->getShiftHour($request->shift_start);
+        $shift->shift_end = $shift->getShiftHour($request->shift_end);
+        $shift->shift = $request->shift;
+        $shift->save();
+
+        LaraFlash::new()->content('Successfully updated the shift.')->type('success')->priority(5);
+
+        return view('manage.dashboard'); 
     }
 
     /**

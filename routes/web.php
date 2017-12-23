@@ -25,12 +25,13 @@ Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|dir
 	Route::resource('/roles', 'RoleController', ['except' => 'destroy']);
 	Route::get('shifts/create/{id}', 'ShiftController@create')->name('shifts.create');
 	Route::resource('/shifts', 'ShiftController', ['except' => [
-		'destroy', 'create'
+		'destroy', 'create', 'show'
 	]]);
+	Route::resource('/timesheets', 'PayrollController');
 	Route::resource('/facilities', 'TeamController');
 });
-Route::post('clockout', 'TimesheetController@clockout')->name('clockout');
-Route::post('clockin', 'TimesheetController@clockin')->name('clockin');
+Route::post('clockout', 'PayrollController@clockout')->name('clockout');
+Route::post('clockin', 'PayrollController@clockin')->name('clockin');
 
 
 Route::get('/home', 'HomeController@index')->name('home');

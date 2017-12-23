@@ -1,9 +1,9 @@
 <?php
 
 namespace App;
-
-use App\Models\Payroll\TimePunch;
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Payroll\{TimePunch, Payroll};
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 
@@ -76,6 +76,16 @@ class User extends Authenticatable
         return null;
     }
 
+    public function team()
+    {
+        return $this->belongsTo('App\Models\Payroll\Team');
+    }
+
+    public function shifts()
+    {
+        return $this->hasManyThrough('App\Models\Payroll\Shift', 'App\Models\Payroll\Team');
+    }
+
     public function  getNameOrUsername()
     {
         return $this->getName() ?: $this->username;
@@ -91,6 +101,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Payroll\TimePunch');
     }
 
+    public function getTimepunches($period = Null, $start = Null)
+    {
+        return $this->hasMany('App\Models\Payroll\TimePunch')->where('shift_date', '>=', Carbon::now()->startOfDay()->subMonths(2));
+    }
+
     public function isClockedIn()
     {
         if (!is_null($this->latestTimePunch) && $this->latestTimePunch->clock_out === NULL)
@@ -103,5 +118,12 @@ class User extends Authenticatable
     public function latestTimePunch()
     {
         return $this->hasOne('App\Models\Payroll\TimePunch')->latest('shift_date');
+    }
+
+    public function getHours($period = Null, $start = Null)
+    {
+        $payroll = new Payroll();
+        $payroll->something($this->getTimepunches());
+
     }
 }

@@ -43,8 +43,9 @@ class Shift extends Model
      * @param  string  $value
      * @return string
      */
-    public function getShiftAttribute($num)
+    public function getShift()
     {
+        $num = $this->shift;
         $ones = $num % 10;
 	    $tens = floor($num / 10) % 10;
 	    if ($tens == 1) {
@@ -58,5 +59,24 @@ class Shift extends Model
 	        }
 	    }
 	    return $num . $suff;
+    }
+
+    public function getTimes($time)
+    {
+
+        if($this->shift_start > $this->shift_end){
+            if($time < $time->copy()->hour($this->shift_end)){
+                $this->clockin = $time->copy()->hour($this->shift_start)->minute(00)->subDay();
+                $this->clockout = $time->copy()->hour($this->shift_end)->minute(00);
+            }else{
+                $this->clockin = $time->copy()->hour($this->shift_start)->minute(00);
+                $this->clockout = $time->copy()->hour($this->shift_end)->addDay()->minute(00);
+            }
+        }else{            
+            $this->clockin = $time->copy()->hour($this->shift_start)->minute(00);
+            $this->clockout = $time->copy()->hour($this->shift_end)->minute(00);
+        }
+
+        return $this;
     }
 }
