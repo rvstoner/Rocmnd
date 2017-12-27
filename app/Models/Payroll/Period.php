@@ -40,6 +40,7 @@ class Period extends Model
                 $week = new Week();                
                 $week->start = $start->copy();
                 $endOfWeek = $start->copy();
+                $week->end = $endOfWeek->endOfWeek();
                 $endOfWeek = $endOfWeek->endOfWeek();
                 $this->period->push($week);
                 if ($this->timepunches->where('shift_date', '>=', $start)->where('shift_date', '<=', $endOfWeek)->count()){

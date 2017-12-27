@@ -46,7 +46,7 @@ class Team extends Model
 
     public function scopeHasSameTeam($query)
     {
-        if(auth()->user()->can('create-facilities')){
+        if(auth()->user()->can('create-facilitiess')){
             return $query;
         }
         return $query->where('id', auth()->user()->team_id);
