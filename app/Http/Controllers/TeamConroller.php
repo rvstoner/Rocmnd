@@ -40,6 +40,7 @@ class TeamController extends Controller
     {
         $this->validateWith([
             'display_name' => 'required|max:255',
+            'ip_address' => 'required|max:255',
             'name' => 'required|max:100',
             'description' => 'sometimes|max:255'
         ]);
@@ -89,6 +90,7 @@ class TeamController extends Controller
     {
         $this->validateWith([
             'display_name' => 'required|max:255',
+            'ip_address' => 'required|max:255',
             'description' => 'sometimes|max:255'
         ]);
         $team = Team::findOrFail($id);

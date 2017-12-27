@@ -37,32 +37,34 @@
           <a href="{{route('login')}}" class="navbar-item is-tab">Login</a>
           {{-- <a href="{{route('register')}}" class="navbar-item is-tab">Join Rocmnd</a> --}}
         @else
-          @if (Auth::user()->isClockedIn())        
-              <form class="navbar-item" role="form" method="POST" action="{{ route('clockout') }}">
-                  {{ csrf_field() }}           
-                  <input class="button is-primary" type="submit" value="Clock Out">
-              </form>
-          @else        
-              <form class="navbar-item" role="form" method="POST" action="{{ route('clockin') }}">
-                {{ csrf_field() }}
-                <div class="field has-addons"> 
-                  <div class="control">
-                    <div class="select">
-                      <select name="reason">
-                        <option value="Scheduled">Scheduled</option>
-                        <option value="Called in">Called in</option>
-                        <option value="On call">On call</option>
-                        <option value="Meeting">Meeting</option>
-                        <option value="DR. Appointment">Dr. App</option>
-                      </select>
+          @IPallowed()
+            @if (Auth::user()->isClockedIn())        
+                <form class="navbar-item" role="form" method="POST" action="{{ route('clockout') }}">
+                    {{ csrf_field() }}           
+                    <input class="button is-primary" type="submit" value="Clock Out">
+                </form>
+            @else        
+                <form class="navbar-item" role="form" method="POST" action="{{ route('clockin') }}">
+                  {{ csrf_field() }}
+                  <div class="field has-addons"> 
+                    <div class="control">
+                      <div class="select">
+                        <select name="reason">
+                          <option value="Scheduled">Scheduled</option>
+                          <option value="Called in">Called in</option>
+                          <option value="On call">On call</option>
+                          <option value="Meeting">Meeting</option>
+                          <option value="DR. Appointment">Dr. App</option>
+                        </select>
+                      </div>
+                    </div> 
+                    <div class="control">         
+                      <input class="button is-primary" type="submit" value="Clock In">
                     </div>
-                  </div> 
-                  <div class="control">         
-                    <input class="button is-primary" type="submit" value="Clock In">
                   </div>
-                </div>
-              </form>                    
-          @endif
+                </form>                    
+            @endif
+          @endIPallowed
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">Welcome {{Auth::user()->getNameOrUsername()}}</a>
             <div class="navbar-dropdown is-right" >

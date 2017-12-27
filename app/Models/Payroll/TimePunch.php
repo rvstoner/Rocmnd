@@ -130,4 +130,9 @@ class TimePunch extends Model
         }
     }
 
+    public function calulate()
+    {
+        return $this->clock_in->diffInSeconds($this->clock_out);
+    }
+
 }

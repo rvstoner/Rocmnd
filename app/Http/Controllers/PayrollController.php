@@ -9,6 +9,12 @@ use App\Models\Payroll\{TimePunch, Team};
 
 class PayrollController extends Controller
 {
+    public function __construct()
+    {
+        Carbon::setWeekStartsAt(Carbon::SUNDAY);    
+        Carbon::setWeekEndsAt(Carbon::SATURDAY); 
+    }
+    
     public function clockin(Request $request)
     {
     	$clockin = new TimePunch;
@@ -30,16 +36,61 @@ class PayrollController extends Controller
         return back();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        dd(new Carbon('first day of January 2008'));
-        $teams = Team::with('users')->get();
+    
+        $teams = Team::hasSameTeam()->usersOnShift()->get();
+
         foreach($teams as $team){
             foreach($team->users as $user){
-                $user->getHours();
+                $user->getHours('lastPeriod');
             }
-            dd($team);
         }
+        return view('manage.timesheets.index', compact('teams'));
+        // return Team::with('users.timepunches')->filter($request, $this->getFilters())->get();
+        
+    }
+
+    public function period(Request $request, $Date, $team = NULL)
+    {
+        return Team::with('users.timepunches')->get();
+        // return Team::with('users.timepunches')->filter($request, $this->getFilters())->get();
+        
+    }
+
+    public function range(Request $request, $startDate, $endDate, $team = NULL)
+    {
+        return Team::with('users.timepunches')->get();
+        // return Team::with('users.timepunches')->filter($request, $this->getFilters())->get();
+        
+    }
+
+    public function week(Request $request, $Date, $team = NULL)
+    {
+        return Team::with('users.timepunches')->get();
+        // return Team::with('users.timepunches')->filter($request, $this->getFilters())->get();
+        
+    }
+
+    public function day(Request $request, $Date, $team = NULL)
+    {
+        return Team::with('users.timepunches')->get();
+        // return Team::with('users.timepunches')->filter($request, $this->getFilters())->get();
+        
+    }
+
+    public function shift(Request $request, $Date, $shift, $team = NULL)
+    {
+        return Team::with('users.timepunches')->get();
+        // return Team::with('users.timepunches')->filter($request, $this->getFilters())->get();
+        
+    }
+
+    protected function getFilters()
+    {
+        return [
+            //
+        ];
     }
 
 

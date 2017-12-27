@@ -3,7 +3,7 @@
 namespace App;
 use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Payroll\{TimePunch, Payroll};
+use App\Models\Payroll\{TimePunch, Payroll, Period, Team};
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 
@@ -76,6 +76,11 @@ class User extends Authenticatable
         return null;
     }
 
+    public function IPallowed()
+    {
+        return (Team::where("ip_address", request()->getClientIp())->count()? true : false);
+    }
+
     public function team()
     {
         return $this->belongsTo('App\Models\Payroll\Team');
@@ -101,9 +106,12 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Payroll\TimePunch');
     }
 
-    public function getTimepunches($period = Null, $start = Null)
+    public function getTimepunches($start, $endDate = NULL)
     {
-        return $this->hasMany('App\Models\Payroll\TimePunch')->where('shift_date', '>=', Carbon::now()->startOfDay()->subMonths(2));
+        if(empty($endDate)){
+            $endDate = Carbon::now();
+        }
+        return $this->hasMany('App\Models\Payroll\TimePunch')->where('shift_date', '>=', $start)->where('shift_date', '<=', $endDate);
     }
 
     public function isClockedIn()
@@ -120,10 +128,26 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\Payroll\TimePunch')->latest('shift_date');
     }
 
-    public function getHours($period = Null, $start = Null)
+    public function getHours($type = Null, $date = Null, $endDate = NULL)
     {
-        $payroll = new Payroll();
-        $payroll->something($this->getTimepunches());
+        $this->payroll = $payroll = new Payroll();
 
+        $payroll->calulateHours($this, $type, $date, $endDate);
+
+    }
+
+    public function scopeOnShift($query)
+    {
+        return $query->whereHas('timepunches', function ($Query) {
+            $Query->latest('shift_date')->where('clock_out', NULL);
+        });
+    }
+    
+    public function scopeHasSameTeam($query)
+    {
+        if(auth()->user()->can('create-facilities')){
+            return $query;
+        }
+        return $query->where('team_id', auth()->user()->team_id);
     }
 }

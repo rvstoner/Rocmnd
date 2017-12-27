@@ -32,6 +32,13 @@
               <input type="text" class="input" name="description" id="description">
             </p>
           </div>
+
+          <div class="field">
+            <label for="ip_address" class="label">IP Address:</label>
+            <p class="control">
+              <input type="text" class="input" name="ip_address" id="ip_address">
+            </p>
+          </div>
         </div> <!-- end of .column -->
       </div> <!-- end of .columns for forms -->
       <div class="columns">

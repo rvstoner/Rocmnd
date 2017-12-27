@@ -3,7 +3,7 @@
 namespace App\Models\Payroll;
 
 use Carbon\Carbon;
-
+use App\Models\Payroll\TimePunch;
 use Illuminate\Database\Eloquent\Model;
 
 class Shift extends Model
@@ -19,6 +19,12 @@ class Shift extends Model
         'shift_start',
         'shift_end',
     ];
+
+    public function __construct()
+    {
+        Carbon::setWeekStartsAt(Carbon::SUNDAY);    
+        Carbon::setWeekEndsAt(Carbon::SATURDAY); 
+    }
 
     public $timestamps = false;
 
@@ -78,5 +84,16 @@ class Shift extends Model
         }
 
         return $this;
+    }
+
+    public function calulate($timepunches)
+    {
+        $this->timepunches = $timepunches;
+        $hours = collect([0]);
+        foreach($this->timepunches as $timepunch){
+            $hours->push($timepunch->calulate());
+        }
+        $this->hours = $hours->sum();
+        return $this->hours;
     }
 }

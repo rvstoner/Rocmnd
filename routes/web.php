@@ -21,6 +21,7 @@ Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|dir
 	Route::get('/', 'ManageController@index');
 	Route::get('/dashboard', 'ManageController@dashboard')->name('manage.dashboard');
 	Route::resource('/users', 'UserController');
+	Route::get('/onshift', 'ManageController@onshift')->name('users.onshift');
 	Route::resource('/permissions', 'PermissionController', ['except' => 'destroy'])->middleware('role:serveradministrator');
 	Route::resource('/roles', 'RoleController', ['except' => 'destroy']);
 	Route::get('shifts/create/{id}', 'ShiftController@create')->name('shifts.create');
