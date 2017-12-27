@@ -39,7 +39,7 @@
         <a class="has-submenu {{Nav::hasSegment(['facilities','timesheets'], 2)}}">Payroll</a>
         <ul class="submenu">
           <li><a href="{{route('facilities.index')}}" class="{{Nav::isResource('facilities')}}">Facilities</a></li>
-          <li><a href="{{route('timesheets.index')}}" class="{{Nav::isResource('timesheets')}}">Facilities</a></li>
+          <li><a href="{{route('timesheets.index')}}" class="{{Nav::isResource('timesheets')}}">Time Sheets</a></li>
         </ul>
       </li>
     </ul>

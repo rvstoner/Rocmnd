@@ -39,7 +39,7 @@ class PayrollController extends Controller
     public function index(Request $request)
     {
     
-        $teams = Team::hasSameTeam()->usersOnShift()->get();
+        $teams = Team::hasSameTeam()->with('users')->get();
 
         foreach($teams as $team){
             foreach($team->users as $user){

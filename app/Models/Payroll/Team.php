@@ -44,4 +44,12 @@ class Team extends Model
         return (new TeamFilters($request))->add($filters)->filter($builder);
     }
 
+    public function scopeHasSameTeam($query)
+    {
+        if(auth()->user()->can('create-facilities')){
+            return $query;
+        }
+        return $query->where('id', auth()->user()->team_id);
+    }
+
 }
