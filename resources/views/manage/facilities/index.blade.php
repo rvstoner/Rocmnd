@@ -7,9 +7,9 @@
       <h1 class="title">Manage Facilities</h1>
     </div>
     <div class="column">
-      {{-- @permission('create-facilities') --}}
-      <a href="{{route('facilities.create')}}" class="button is-primary is-pulled-right"><i class="fa fa-user-plus m-r-10"></i> Create New Facility</a>
-      {{-- @endpermission --}}
+      @permission('create-facilities')
+        <a href="{{route('facilities.create')}}" class="button is-primary is-pulled-right"><i class="fa fa-user-plus m-r-10"></i> Create New Facility</a>
+      @endpermission
     </div>
   </div>
   <hr class="m-t-0">
@@ -37,7 +37,7 @@
          <td class="has-text-right">
           <a class="button is-outlined m-r-5" href="{{route('facilities.show', $facility->id)}}">View</a>
           @permission('update-facilities')
-          <a class="button is-light" href="{{route('facilities.edit', $facility->id)}}">Edit</a>
+            <a class="button is-light" href="{{route('facilities.edit', $facility->id)}}">Edit</a>
           @endpermission
         </td>
       </tr>

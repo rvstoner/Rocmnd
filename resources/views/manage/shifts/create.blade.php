@@ -22,7 +22,7 @@
         <li>
           <div class="columns">
             <div class="column">
-              <strong>Shift:</strong> {{$shift->shift}} 
+              <strong>Shift:</strong> {{$shift->getShift()}} 
             </div>
             <div class="column">
               <strong>Clock in:</strong> {{Carbon\Carbon::now()->hour($shift->shift_start)->minute('00')->format('h:i A')}} 

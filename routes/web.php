@@ -26,7 +26,7 @@ Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|dir
 	Route::resource('/roles', 'RoleController', ['except' => 'destroy']);
 	Route::get('shifts/create/{id}', 'ShiftController@create')->name('shifts.create');
 	Route::resource('/shifts', 'ShiftController', ['except' => [
-		'destroy', 'create', 'show'
+		'destroy', 'index', 'create', 'show'
 	]]);
 	Route::resource('/timesheets', 'PayrollController');
 	Route::resource('/facilities', 'TeamController');

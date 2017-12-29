@@ -44,9 +44,30 @@
           </div>
 
           <div class="field">
+            <label for="first_name" class="label">First Name</label>
+            <p class="control">
+              <input type="text" class="input" name="first_name" id="first_name">
+            </p>
+          </div>
+
+          <div class="field">
+            <label for="last_name" class="label">Last Name</label>
+            <p class="control">
+              <input type="text" class="input" name="last_name" id="last_name">
+            </p>
+          </div>
+
+          <div class="field">
             <label for="password" class="label">Password</label>
             <p class="control">
-              <input type="text" class="input" name="password" id="password" v-if="!auto_password" placeholder="Manually give a password to this user">
+              <input type="password" class="input" name="password" id="password" v-if="!auto_password" placeholder="Manually give a password to this user">
+            </p>
+          </div>
+
+          <div class="field">
+            <label for="password_confirmation" class="label" v-if="!auto_password">Confirm Password</label>
+            <p class="control">
+              <input type="password" class="input" name="password_confirmation" id="password" v-if="!auto_password" placeholder="Manually give a password to this user">
               <b-checkbox name="auto_generate" class="m-t-15" v-model="auto_password">Auto Generate Password</b-checkbox>
             </p>
           </div>

@@ -2,7 +2,9 @@
 
 namespace App;
 use Carbon\Carbon;
+use App\Filters\Team\TeamFilters;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\Payroll\{TimePunch, Payroll, Period, Team};
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -149,5 +151,10 @@ class User extends Authenticatable
             return $query;
         }
         return $query->where('team_id', auth()->user()->team_id);
+    }
+
+    public function scopeFilter(Builder $builder, $request, array $filters = [])
+    {
+        return (new TeamFilters($request))->add($filters)->filter($builder);
     }
 }

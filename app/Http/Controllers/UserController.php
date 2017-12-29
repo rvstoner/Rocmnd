@@ -19,7 +19,7 @@ class UserController extends Controller
     public function index()
     {
       $users = User::orderBy('id', 'desc')->with('roles')->paginate(10);
-      // dd($users);
+      
       return view('manage.users.index')->withUsers($users);
     }
     /**
@@ -43,7 +43,11 @@ class UserController extends Controller
     {
       $this->validateWith([
         'username' => 'required|max:255',
-        'email' => 'required|email|unique:users'
+        'first_name' => 'required|max:255',
+        'last_name' => 'required|max:255',
+        'email' => 'required|email|unique:users',
+        'password' => 'required_with:password_confirmation',
+        'password_confirmation' => 'required_with:password|same:password',
       ]);
       if (!empty($request->password)) {
         $password = trim($request->password);
@@ -65,6 +69,8 @@ class UserController extends Controller
       }
       $user = new User();
       $user->username = $request->username;
+      $user->first_name = $request->first_name;
+      $user->last_name = $request->last_name;
       $user->team_id = $team;
       $user->email = $request->email;
       $user->password = Hash::make($password);
