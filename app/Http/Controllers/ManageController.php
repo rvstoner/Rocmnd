@@ -25,7 +25,12 @@ class ManageController extends Controller
 
     public function onshift()
     {
-		$users = User::hasSameTeam()->OnShift()->get();
-		return view('manage.onshift')->withUsers($users);
+        $users = User::hasSameTeam()->OnShift()->get();
+        return view('manage.onshift')->withUsers($users);
+    }
+
+    public function address()
+    {
+		return view('manage.address');
     }
 }
