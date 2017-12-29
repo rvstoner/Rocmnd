@@ -251,7 +251,7 @@ class PayrollController extends Controller
     protected function format($time, $date)
     {
         if(preg_match('~^\d+(?::\d+)*$~', $time)){
-                return Carbon::createFromFormat('m/d/Y h:i', $date . ' ' . $time);
+                return Carbon::createFromFormat('m/d/Y H:i', $date . ' ' . $time);
             }else{
                 return Carbon::createFromFormat('m/d/Y h:i A', $date . ' ' . $time);            
             }

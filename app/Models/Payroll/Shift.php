@@ -36,7 +36,7 @@ class Shift extends Model
     public function getShiftHour($time)
     {
     	if(preg_match('~^\d+(?::\d+)*$~', $time)){
-            $newTime = Carbon::createFromFormat('h:i', $time);
+            $newTime = Carbon::createFromFormat('H:i', $time);
         }else{
             $newTime = Carbon::createFromFormat('h:i A', $time);            
         }

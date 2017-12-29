@@ -31,6 +31,12 @@ class ManageController extends Controller
 
     public function address()
     {
+        $ips = ['192.168.1.1', '145.86.95.32', '165.745.23.18'];
+        $addresses = json_encode($ips);
+        $ips = json_decode($addresses);
+        dump($addresses);
+        dd($ips);
+
 		return view('manage.address');
     }
 }

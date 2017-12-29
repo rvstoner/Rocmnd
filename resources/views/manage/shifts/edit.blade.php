@@ -35,6 +35,7 @@
       </div>
     </div>
     <form action="{{route('shifts.update', $shift->id)}}" method="POST">
+      {{method_field('PUT')}}
       {{csrf_field()}}
       
       <div class="select">

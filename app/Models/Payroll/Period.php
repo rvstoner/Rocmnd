@@ -58,6 +58,3 @@ class Period extends Model
         $this->rollover = $rollover->sum();
     }
 }
-// 144000
-// 172800 28800
-// 86400
