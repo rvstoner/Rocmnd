@@ -13,16 +13,16 @@
         </a>
       @endif
 
-      <button class="button navbar-burger">
+      <button class="button navbar-burger" data-target="navMenu">
        <span></span>
        <span></span>
        <span></span>
      </button>
     </div>
-    <div class="navbar-menu">
+    <div class="navbar-menu" id="navMenu">
       <div class="navbar-start">
         @auth
-          @role('serveradministrator|payrollmanager|director|assistantdirector|administrator')
+          @role('serveradministrator|payrollmanager|director|assistantdirector|administrator|supervisor|parttimesupervisor')
             <a href="{{route('manage.dashboard')}}" class="navbar-item">
               Dashboard
             </a>
@@ -31,7 +31,7 @@
       </div> <!-- end of .navbar-start -->
 
 
-      <div class="navbar-end nav-menu" style="overflow: visible">
+      <div class="navbar-end nav-menu" style="overflow: visible" id="navMenu">
 
         @guest
           <a href="{{route('login')}}" class="navbar-item is-tab">Login</a>

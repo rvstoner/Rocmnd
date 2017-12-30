@@ -80,7 +80,7 @@ class User extends Authenticatable
 
     public function IPallowed()
     {
-        return (Team::where("ip_address", request()->getClientIp())->count()? true : false);
+        return $this->hasManyThrough('App\Models\Payroll\IpAddress', 'App\Models\Payroll\Team');
     }
 
     public function team()

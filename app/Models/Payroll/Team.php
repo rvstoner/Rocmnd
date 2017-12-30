@@ -34,6 +34,11 @@ class Team extends Model
         return $this->hasMany('App\Models\Payroll\Shift');
     }
 
+    public function addresses()
+    {
+        return $this->hasMany('App\Models\Payroll\IpAddress');
+    }
+
     public function timePunches()
     {
         return $this->hasManyThrough('App\Models\Payroll\TimePunch', 'App\User');

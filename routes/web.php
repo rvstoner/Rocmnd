@@ -23,8 +23,11 @@ Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|dir
 	Route::resource('/users', 'UserController');
 	Route::get('/onshift', 'ManageController@onshift')->name('users.onshift');
 	Route::resource('/permissions', 'PermissionController', ['except' => 'destroy'])->middleware('role:serveradministrator');
-	Route::get('/address', 'ManageController@address')->middleware('role:serveradministrator');
 	Route::resource('/roles', 'RoleController', ['except' => 'destroy']);
+	Route::get('address/create/{id}', 'AddressController@create')->name('address.create');
+	Route::resource('/address', 'AddressController', ['except' => [
+		'destroy', 'create'
+	]]);
 	Route::get('shifts/create/{id}', 'ShiftController@create')->name('shifts.create');
 	Route::resource('/shifts', 'ShiftController', ['except' => [
 		'destroy', 'index', 'create', 'show'

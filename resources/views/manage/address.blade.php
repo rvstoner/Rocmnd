@@ -1,5 +1,5 @@
 @extends('layouts.manage')
 
 @section('content')
-  {{request()->getClientIp()}}
+  {{ip2long(request()->getClientIp())}}
 @endsection
