@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-      $users = User::orderBy('id', 'desc')->with('roles')->paginate(10);
+      $users = User::orderBy('id', 'desc')->with('roles', 'team')->paginate(20);
       
       return view('manage.users.index')->withUsers($users);
     }
@@ -75,21 +75,13 @@ class UserController extends Controller
       $user->email = $request->email;
       $user->password = Hash::make($password);
       $user->save();
-      // $tempPassword = TempPassword::updateOrCreate(
-      //       ['user_id' => $user->id],
-      //       ['password' => $str]
-      //   );
+      
       if ($request->roles) {
         $user->syncRoles(explode(',', $request->roles));
       }
       LaraFlash::new()->content('Successfully created the new a new User.')->type('success')->priority(5);
       return redirect()->route('users.show', $user->id);
-      // if () {
-      //
-      // } else {
-      //   Session::flash('danger', 'Sorry a problem occurred while creating this user.');
-      //   return redirect()->route('users.create');
-      // }
+      
     }
     /**
      * Display the specified resource.
@@ -99,7 +91,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-      $user = User::where('id', $id)->with('roles')->first();
+      $user = User::where('id', $id)->with('roles')->with(['timepunches' => function ($qurey) {
+        $qurey->orderBy('shift_date', 'desc')->take(10);
+      }])->first();
       return view("manage.users.show")->withUser($user);
     }
     /**
@@ -130,7 +124,10 @@ class UserController extends Controller
         'home_phone_area' => 'required_with_all:home_phone_prefix,home_phone_number|digits:3',
         'home_phone_prefix' => 'required_with_all:home_phone_area,home_phone_number|digits:3',
         'home_phone_number' => 'required_with_all:home_phone_prefix,home_phone_area|digits:4',
-        'email' => 'required|email|unique:users,email,'.$id
+        'secondary_phone_area' => 'required_with_all:secondary_phone_prefix,secondary_phone_number|digits:3',
+        'secondary_phone_prefix' => 'required_with_all:secondary_phone_area,secondary_phone_number|digits:3',
+        'secondary_phone_number' => 'required_with_all:secondary_phone_prefix,secondary_phone_area|digits:4',
+        
       ]);
       $user = User::findOrFail($id);
       $user->first_name = $request->first_name;

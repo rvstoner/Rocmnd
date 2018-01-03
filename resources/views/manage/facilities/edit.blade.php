@@ -17,7 +17,7 @@
 					<article class="media">
 						<div class="media-content">
 							<div class="content">
-								<h2 class="title">Facility Details:</h1>
+								<h2 class="title">Facility Details:</h2>
 									<div class="field">
 										<p class="control">
 											<label for="display_name" class="label">Name (Human Readable)</label>

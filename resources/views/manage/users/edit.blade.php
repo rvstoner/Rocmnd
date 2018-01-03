@@ -55,10 +55,29 @@
           </div>
 
           <div class="field">
-            <label for="email" class="label">Email:</label>
-            <p class="control">
-              <input type="text" class="input" name="email" id="email" value="{{$user->email}}">
-            </p>
+            <label class="label">Secondary Number:</label>
+            <div class="field-body">
+              <div class="field has-addons">
+                <p class="control">
+                  <a class="button is-static">
+                    1
+                  </a>
+                </p>
+                <p class="control">
+                  <input class="input" type="tel" name="secondary_phone_area" id="secondary_phone_area" placeholder="999" value="{{$user->secondary_phone_area}}">
+                </p>
+              </div>
+              <div class="field">
+                <p class="control is-expanded">
+                  <input class="input" type="tel" name="secondary_phone_prefix" id="secondary_phone_prefix" placeholder="999" value="{{$user->secondary_phone_prefix}}">
+                </p>
+              </div>
+              <div class="field">
+                <p class="control is-expanded">
+                  <input class="input" type="tel" name="secondary_phone_number" id="secondary_phone_number" placeholder="9999" value="{{$user->secondary_phone_number}}">
+                </p>
+              </div>
+            </div>
           </div>
 
           <div class="field">

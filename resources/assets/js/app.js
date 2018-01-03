@@ -24,3 +24,4 @@ Vue.use(Buefy);
 // });
 
 require('./manage')
+require('./hamburger')

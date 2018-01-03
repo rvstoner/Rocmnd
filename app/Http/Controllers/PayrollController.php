@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Payroll\{TimePunch, Team, TimePunchEdits};
+use App\Models\Payroll\{TimePunch, Team, TimePunchEdits,Period};
 
 class PayrollController extends Controller
 {
@@ -39,18 +39,16 @@ class PayrollController extends Controller
     public function index(Request $request)
     {
     
-        // return User::with(['timepunches', 'team'])->filter($request, $this->getFilters())->get();
+        $users = User::with(['timepunches', 'team'])->filter($request, $this->getFilters())->hasSameTeam()->get();
+
+        foreach($users as $user){
+            $user->getHours();
+        }
+        $teams = $users->groupBy('team_id');
 
         // dd($users);
-        $teams = Team::hasSameTeam()->with('users')->get();
-
-        foreach($teams as $team){
-            foreach($team->users as $user){
-                $user->getHours('lastPeriod');
-            }
-        }
+        
         return view('manage.timesheets.index', compact('teams'));
-        // // return Team::with('users.timepunches')->filter($request, $this->getFilters())->get();
         
     }
 
@@ -124,13 +122,13 @@ class PayrollController extends Controller
      */
     public function show($id)
     {
-        // $timepunch = TimePunch::where('id', $id)->with('user')->first();
+        $timepunch = TimePunch::where('id', $id)->with('user')->first();
 
-        // if($timepunch->edited){
-        //     $timepunchedit = TimePunchEdits::where('time_punch_id', $id)->with('user')->first();
-        // }
+        if($timepunch->edited){
+            $timepunchedit = TimePunchEdits::where('time_punch_id', $id)->with('user')->first();
+        }
 
-        // return view('timesheets.show',compact('timepunch', 'timepunchedit'));
+        return view('timesheets.show',compact('timepunch', 'timepunchedit'));
     }
 
      /**
@@ -141,9 +139,9 @@ class PayrollController extends Controller
      */
     public function edit($id)
     {
-        // $timepunch = TimePunch::where('id', $id)->with('user')->first();
+        $timepunch = TimePunch::where('id', $id)->with('user')->first();
 
-        // return view('timesheets.edit',compact('timepunch'));
+        return view('manage.timesheets.edit',compact('timepunch'));
 
     }
 
@@ -229,23 +227,20 @@ class PayrollController extends Controller
      */
     public function user($id)
     {
-        $startOfPeriod = Carbon::now()->subMonths(2);
+        $period = new Period();
+        $period->getLastPeriod();
+        $startOfPeriod = $period->start->startOfWeek();
 
-        $endOfPeriod = Carbon::now();
+        $endOfPeriod = $period->end;
 
         $user = User::with(['timepunches' => function ($qurey) use ($startOfPeriod, $endOfPeriod){
             $qurey->whereBetween('shift_date', [$startOfPeriod, $endOfPeriod])->
                     orderBy('clock_in', 'asc');
         }])->findOrFail($id);
 
-        $user->calulateHours();
+        $user->getHours();
 
-        foreach($user->weeks as $week){
-            $week->sortBy('clock_in');
-        }
-        // dd($user);
-
-        return view('timesheets.user', compact('user'));
+        return view('manage.timesheets.user', compact('user'));
     }
 
     protected function format($time, $date)

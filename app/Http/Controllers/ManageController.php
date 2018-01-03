@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use App\Models\Payroll\Team;
+use App\Models\Payroll\{Team, IpAddress};
 use Illuminate\Http\Request;
 
 class ManageController extends Controller

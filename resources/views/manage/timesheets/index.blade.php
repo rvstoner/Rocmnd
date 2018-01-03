@@ -3,13 +3,13 @@
 @section('content')
 
 <table class="table table-responsive table-bordered">
-	@foreach($teams as $team)
+	@foreach($teams as $users)
 		<tr>
-			<th colspan='10'>{{$team->display_name}}</th>
+				<th colspan='10'>{{$users->first()->team->display_name}}</th>
 		</tr>
 		<tr>
 			<th scope="col">Name</th>
-			@foreach($team->users->first()->payroll->period->period as $week)
+			@foreach($users->first()->payroll->period->weeks as $week)
 			<th scope="col" colspan='2'>
 				{{$week->start->format('m/d/Y')}} to {{ $week->end->format('m/d/Y') }}</th>
 				@if ($loop->first)
@@ -19,10 +19,10 @@
 				<th scope="col">Hours</th>
 				<th scope="col">Overtime</th>
 		</tr>
-		@foreach($team->users as $user)
+		@foreach($users as $user)
 			<tr>
-				<td><a href="{{ url('/usertimesheet',$user->id) }}">{{ $user->getNameOrUsername() }}</a></td>
-				@foreach($user->payroll->period->period as $week)
+				<td><a href="{{ route('timesheets.user',$user->id) }}">{{ $user->getNameOrUsername() }}</a></td>
+				@foreach($user->payroll->period->weeks as $week)
 				@if(empty($week->hours))
 					<td>0</td>
 				@else

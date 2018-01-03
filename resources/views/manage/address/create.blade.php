@@ -25,7 +25,7 @@
               <strong>Ip address:</strong> {{$ip->address}} 
             </div>
             <div class="column">
-              <a href="{{route('address.edit', $ip->id)}}" class="button is-primary is-pulled-right"><i class="fa fa-user m-r-10"></i> Edit Ip address</a>
+              <a href="{{route('address.edit', $ip->id)}}" class="button is-primary is-pulled-right"><i class="fa fa-pencil-square-o m-r-10"></i> Edit Ip address</a>
             </div>
           </div>
         </li>

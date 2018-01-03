@@ -88,7 +88,8 @@ class Shift extends Model
 
     public function calulate($timepunches)
     {
-        $this->timepunches = $timepunches;
+        $this->timepunches = collect([]);
+        $this->timepunches->push($timepunches);
         $hours = collect([0]);
         foreach($this->timepunches as $timepunch){
             $hours->push($timepunch->calulate());

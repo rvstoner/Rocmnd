@@ -18,11 +18,14 @@
 
     @include('_includes.nav.main')
     
-      @yield('content')
+        <div id="app">
+            @yield('content')
+        </div>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
-    @include('_includes.notifications.toast')
-    @yield('scripts')
+    
 </body>
+<!-- Scripts -->
+<script src="{{ asset('js/app.js') }}"></script>
+@include('_includes.notifications.toast')
+@yield('scripts')
 </html>

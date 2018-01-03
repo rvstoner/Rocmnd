@@ -41,7 +41,6 @@
                     <td></td>
                     <td>{{$ip->address}}</td>
                     <td class="has-text-right">
-                      <a class="button is-outlined m-r-5" href="{{route('address.show', $ip->id)}}">View</a>
                       @permission('update-facilities')
                         <a class="button is-light" href="{{route('address.edit', $ip->id)}}">Edit</a>
                       @endpermission

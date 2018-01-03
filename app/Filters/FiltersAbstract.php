@@ -3,7 +3,7 @@
 namespace App\Filters;
 
 use Illuminate\Http\Request;
-use App\Filters\Team\UserFilters;
+use App\Filters\User\UserFilters;
 use Illuminate\Database\Eloquent\Builder;
 
 abstract class FiltersAbstract
@@ -22,7 +22,6 @@ abstract class FiltersAbstract
 		foreach ($this->getFilters() as $filter => $value){
 			$this->resolveFilter($filter)->filter($builder, $value);
 		}
-		dd($builder->get());
 		return $builder;
 	}
 

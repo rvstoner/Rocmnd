@@ -1,8 +1,11 @@
 <?php
 
 namespace App;
+
+use DB;
 use Carbon\Carbon;
-use App\Filters\Team\TeamFilters;
+use App\Filters\User\UsersFilters;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Payroll\{TimePunch, Payroll, Period, Team};
@@ -80,7 +83,27 @@ class User extends Authenticatable
 
     public function IPallowed()
     {
-        return $this->hasManyThrough('App\Models\Payroll\IpAddress', 'App\Models\Payroll\Team');
+        
+        return $this->cachedIps();
+    }
+    /**
+     * Tries to return all the cached Ip's.
+     * If it can't bring the ip's from the cache,
+     * it brings them back from the DB.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function cachedIps()
+    {
+        $cacheKey = 'ipAdresses';
+
+        // if (Cache::has($cacheKey)) {
+        //     //
+        // }
+
+        return Cache::remember($cacheKey, '60', function () {
+            return DB::table('ip_addresses')->get();
+        });
     }
 
     public function team()
@@ -130,7 +153,7 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\Payroll\TimePunch')->latest('shift_date');
     }
 
-    public function getHours($type = Null, $date = Null, $endDate = NULL)
+    public function getHours($type = "lastPeriod", $date = Null, $endDate = NULL)
     {
         $this->payroll = $payroll = new Payroll();
 
@@ -147,7 +170,7 @@ class User extends Authenticatable
     
     public function scopeHasSameTeam($query)
     {
-        if(auth()->user()->can('create-facilities')){
+        if(auth()->user()->can('create-facilitiess')){
             return $query;
         }
         return $query->where('team_id', auth()->user()->team_id);
@@ -155,6 +178,6 @@ class User extends Authenticatable
 
     public function scopeFilter(Builder $builder, $request, array $filters = [])
     {
-        return (new TeamFilters($request))->add($filters)->filter($builder);
+        return (new UsersFilters($request))->add($filters)->filter($builder);
     }
 }

@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payroll extends Model
 {
-    public function calulateHours($user, $type = Null, $date = Null, $enddate = NULL)
+    
+    public function calulateHours($user, $type, $date, $enddate)
     {
-    	$this->$type($user);
+    	$this->$type($user, $date, $enddate);
     }
 
     public function timePunches()
@@ -19,11 +20,20 @@ class Payroll extends Model
         return $this->hasManyThrough('App\Models\Payroll\TimePunch', 'App\User');
     }
 
-    public function lastPeriod($user)
+    public function lastPeriod($user, $date, $enddate)
     {
         $this->period = $period = new Period();
         $period->getLastPeriod();
-        $period->timepunches = $user->getTimepunches($period->start, $period->end)->get();
+        $period->timepunches = $user->timepunches->where('shift_date', '>=', $period->start->copy()->startOfWeek())->where('shift_date', '<=', $period->end);
+        $period->calulate();
+    }
+
+    public function range($user, $date, $enddate)
+    {
+        $this->period = $period = new Period();
+        $period->start = $date->copy()->startOfWeek();
+        $period->end = $enddate;
+        $period->timepunches = $user->timepunches->where('shift_date', '>=', $period->start)->where('shift_date', '<=', $period->end);
         $period->calulate();
     }
 }

@@ -35,7 +35,6 @@
 
         @guest
           <a href="{{route('login')}}" class="navbar-item is-tab">Login</a>
-          {{-- <a href="{{route('register')}}" class="navbar-item is-tab">Join Rocmnd</a> --}}
         @else
           @IPallowed()
             @if (Auth::user()->isClockedIn())        
@@ -68,17 +67,17 @@
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">Welcome {{Auth::user()->getNameOrUsername()}}</a>
             <div class="navbar-dropdown is-right" >
-              <a href="#" class="navbar-item">
+              <a href="{{route('profile.edit', $user->id)}}" class="navbar-item">
                 <span class="icon">
                   <i class="fa fa-fw fa-user-circle-o m-r-5"></i>
                 </span>Profile
               </a>
 
-              <a href="#" class="navbar-item">
+              {{-- <a href="#" class="navbar-item">
                 <span class="icon">
                   <i class="fa fa-fw fa-bell m-r-5"></i>
                 </span>Notifications
-              </a>
+              </a> --}}
               @auth
                 @role('serveradministrator|payrollmanager|director|assistantdirector|administrator')
                   <a href="{{route('manage.dashboard')}}" class="navbar-item">

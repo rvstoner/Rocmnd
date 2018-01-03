@@ -40,7 +40,7 @@ class AddressController extends Controller
     public function store(Request $request)
     {
         $this->validateWith([
-            'address' => 'required|unique:ip_addresses',
+            'address' => 'required|ip|unique:ip_addresses',
         ]);
 
         $ip = new IpAddress();
@@ -52,17 +52,6 @@ class AddressController extends Controller
         return back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $ip = IpAddress::findOrFail($id)->with("team");
-        return view('manage.address.show', compact('$ip'));
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -86,7 +75,7 @@ class AddressController extends Controller
     public function update(Request $request, $id)
     {
         $this->validateWith([
-            'address' => 'required',
+            'address' => 'required|ip',
         ]);
 
         $ip = IpAddress::findOrFail($id)->with("team");

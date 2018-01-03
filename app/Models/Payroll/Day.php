@@ -29,17 +29,14 @@ class Day extends Model
 
     public function breakIntoShifts()
     {
-        $this->period = $period = collect([]);
+        $this->shifts = collect([]);
         $x = 1;
         $hours = collect([0]);
-        while($x < 4){
-            if($this->timepunches->where('shift', $x)->count()){
-            	$shift = new Shift();
-	            $shift->start = $this->start; 
-	            $hours->push($shift->calulate($this->timepunches->where('shift', $x)));
-	            $this->period->push($shift);
-            }
-            $x++;
+        foreach($this->timepunches as $timepunch){
+            $shift = new Shift();
+            $shift->start = $this->start; 
+            $hours->push($shift->calulate($timepunch));
+            $this->shifts->push($shift);
         }
         $this->hours = $hours->sum();
     }

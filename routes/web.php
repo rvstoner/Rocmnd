@@ -26,15 +26,20 @@ Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|dir
 	Route::resource('/roles', 'RoleController', ['except' => 'destroy']);
 	Route::get('address/create/{id}', 'AddressController@create')->name('address.create');
 	Route::resource('/address', 'AddressController', ['except' => [
-		'destroy', 'create'
+		'destroy', 'create', 'show'
 	]]);
 	Route::get('shifts/create/{id}', 'ShiftController@create')->name('shifts.create');
 	Route::resource('/shifts', 'ShiftController', ['except' => [
 		'destroy', 'index', 'create', 'show'
 	]]);
+	route::get('usertimesheet/{id}', 'PayrollController@user')->name('timesheets.user');
 	Route::resource('/timesheets', 'PayrollController');
 	Route::resource('/facilities', 'TeamController');
 });
+
+Route::resource('/profile', 'ProfileController', ['except' => [
+		'destroy', 'index', 'create', 'store'
+	]]);
 Route::post('clockout', 'PayrollController@clockout')->name('clockout');
 Route::post('clockin', 'PayrollController@clockin')->name('clockin');
 

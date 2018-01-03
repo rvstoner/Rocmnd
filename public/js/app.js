@@ -1022,7 +1022,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(11);
-module.exports = __webpack_require__(39);
+module.exports = __webpack_require__(40);
 
 
 /***/ }),
@@ -1059,6 +1059,7 @@ Vue.use(__WEBPACK_IMPORTED_MODULE_0_buefy___default.a);
 // });
 
 __webpack_require__(38);
+__webpack_require__(39);
 
 /***/ }),
 /* 12 */
@@ -40401,6 +40402,10 @@ for (var i = 0; i < accordions.length; i++) {
   };
 }
 
+/***/ }),
+/* 39 */
+/***/ (function(module, exports) {
+
 document.addEventListener('DOMContentLoaded', function () {
 
   // Get all "navbar-burger" elements
@@ -40426,7 +40431,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

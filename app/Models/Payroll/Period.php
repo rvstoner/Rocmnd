@@ -16,11 +16,12 @@ class Period extends Model
     
     public function getLastPeriod()
     {
-    	$this->start = (Carbon::now()->day < '15' ? Carbon::now()->copy()->subMonth()->day(16)->startOfWeek() : Carbon::now()->copy()->firstOfMonth()->startOfWeek());
+        $this->start = (Carbon::now()->day < '15' ? Carbon::now()->copy()->subMonth()->day(16)->startOfDay() : Carbon::now()->copy()->firstOfMonth());
         $this->end = (Carbon::now()->day < '15' ? Carbon::now()->copy()->subMonth()->endOfMonth() : Carbon::now()->copy()->day(15)->endOfDay());
+
         return $this;
     }
-
+    
     public function calulate()
     {
         $this->breakIntoWeeks();
@@ -29,23 +30,20 @@ class Period extends Model
 
     public function breakIntoWeeks()
     {
-        $start = $this->start->copy();
-        $this->period = $period = collect([]);
+        $start = $this->start->copy()->startOfWeek();
+        $this->weeks = $period = collect([]);
         $hours = collect([0]);
         $overtime = collect([0]);
         $rollover = collect([0]);
-        while($start <= $this->end){
-            
+        while($start < $this->end){
             if($start->dayOfWeek === Carbon::SUNDAY){
-                $week = new Week();                
+                $week = new Week();
                 $week->start = $start->copy();
-                $endOfWeek = $start->copy();
-                $week->end = $endOfWeek->endOfWeek();
-                $endOfWeek = $endOfWeek->endOfWeek();
-                $this->period->push($week);
+                $week->end = $endOfWeek = $start->copy()->endOfWeek();;
+                $this->weeks->push($week);
                 if ($this->timepunches->where('shift_date', '>=', $start)->where('shift_date', '<=', $endOfWeek)->count()){
                     $week->timepunches = $this->timepunches->where('shift_date', '>=', $start)->where('shift_date', '<=', $endOfWeek);
-                    $week->calulate();
+                    $week->calulate($this->start);
                     $hours->push($week->hours);
                     $overtime->push($week->overtime);
                     $rollover->push($week->rollover);
@@ -53,6 +51,7 @@ class Period extends Model
             }
             $start->addDay();
         }
+               
         $this->hours = $hours->sum();
         $this->overtime = $overtime->sum();
         $this->rollover = $rollover->sum();

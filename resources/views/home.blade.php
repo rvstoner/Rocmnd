@@ -8,25 +8,36 @@
     </div>
 </section>
 <section class="section">
-    <article class="message is-info">
-        <div class="message-header">
-            <p>CPR Trainning {{ Carbon\Carbon::now()->addDays(2)->diffForHumans() }}</p>
-            <button class="delete" aria-label="delete"></button>
-        </div>
-        <div class="message-body">
-            <strong>{{ Carbon\Carbon::now()->addDays(2)->toDayDateTimeString() }}</strong><br>
-            Some message about the meeting.
-        </div>
-    </article>
-    <article class="message is-info">
-        <div class="message-header">
-            <p>ALL STAFF MEETING {{ Carbon\Carbon::now()->addHours(2)->diffForHumans() }}</p>
-            <button class="delete" aria-label="delete"></button>
-        </div>
-        <div class="message-body">
-            <strong>{{ Carbon\Carbon::now()->addHours(2)->toDayDateTimeString() }}</strong><br>
-            Some message about the meeting.
-        </div>
-    </article>
+    <template>
+        <section>
+            <b-message title="Default">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh id hendrerit imperdiet, elit sapien laoreet elit
+            </b-message>
+
+            <b-message title="Danger" type="is-danger">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh id hendrerit imperdiet, elit sapien laoreet elit
+            </b-message>
+
+            <b-message title="Success" type="is-success">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh id hendrerit imperdiet, elit sapien laoreet elit
+            </b-message>
+
+            <b-message title="Info" type="is-info">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh id hendrerit imperdiet, elit sapien laoreet elit
+            </b-message>
+
+            <b-message title="Warning" type="is-warning">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh id hendrerit imperdiet, elit sapien laoreet elit
+            </b-message>
+        </section>
+    </template>
 </section>
+@endsection
+
+@section('scripts')
+    <script>
+        var app = new Vue({
+            el: '#app',
+        });
+    </script>
 @endsection

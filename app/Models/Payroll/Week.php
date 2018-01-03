@@ -14,54 +14,46 @@ class Week extends Model
         Carbon::setWeekEndsAt(Carbon::SATURDAY); 
     }
 
-    public function calulate($date = NULL)
-    {
-    	if(empty($date) && empty($this->start)){
-    		return back();
-    	}
-    	if (!empty($date)){
-    		$this->start = $date->startOfWeek();    		
-    	}
+    public function calulate($date)
+    {    	
     	$this->end = $this->start->copy()->endOfWeek();  
-    	$this->breakIntoDays();
+    	$this->breakIntoDays($date);
         $this->checkForOverTime();
-    	
     }
 
-    public function breakIntoDays()
+    public function breakIntoDays($date)
     {
-    	$weekStart = $this->start->copy();
+    	$day = new Day();
+        $day->start =  $this->start;
         $hours = collect([0]);
     	$rollover = collect([0]);
-        $this->period = $period = collect([]);
-        while($weekStart <= $this->end){
-            if($this->checkForRollOver($weekStart)){
-                if($this->timepunches->where('shift_date', $weekStart)->count()){
-                    $day = new Day();
-                    $day->start = $weekStart->copy();
-                    $rollover->push($day->calulate($this->timepunches->where('shift_date', $weekStart)));
-                    $this->period->push($day);
-                }
+        $this->days = collect([]);
+        $this->timepunches->sortBy('shift_date');
+        $timepunchesGrouped = $this->timepunches->groupBy(function($date) {
+            return Carbon::parse($date->shift_date)->format('Y-m-d');
+        });
+        foreach($timepunchesGrouped as $timepunches){
+            if($this->checkForRollOver($date, $timepunches->first()->shift_date)){
+                $day = new Day();
+                $day->start = $timepunches->first()->shift_date;
+                $rollover->push($day->calulate($timepunches));
+                $this->days->push($day);
             }else{
-                if($this->timepunches->where('shift_date', $weekStart)->count()){
-                    $day = new Day();
-                    $day->start = $weekStart->copy();
-                    $hours->push($day->calulate($this->timepunches->where('shift_date', $weekStart)));
-                    $this->period->push($day);
-                }
+                $day = new Day();
+                $day->start = $timepunches->first()->shift_date;
+                $hours->push($day->calulate($timepunches));
+                $this->days->push($day);
             }
-    
+        
             
-            
-            $weekStart->addDay();
         }
         $this->hours = $hours->sum();
         $this->rollover = $rollover->sum();
     }
 
     public function checkForOverTime(){
-        if($this->hours > 144000){
-            $hours = $this->hours;
+        if(($this->hours + $this->rollover) > 144000){
+            $hours = $this->hours + $this->rollover;
             $this->overtime = $hours - 144000;
             $this->hours = $this->hours - $this->overtime;
         }else{
@@ -69,23 +61,12 @@ class Week extends Model
         }
     }    
 
-    public function checkForRollOver($date)
+    public function checkForRollOver($start, $date)
     {
-    	$period = new Period();
-        $period->getLastPeriod();
-        if($period->end->day === 15){
-            if($date->day > 15){
-                return true;
-            }
-            return false;
-
-        }else{
-            if($date->day < 15){
-                return true;
-            }
-            return false;
+        if($start > $date){
+            return true;
         }
-        
+        return false;
     }    
     
 }

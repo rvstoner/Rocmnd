@@ -20,6 +20,7 @@
     "dependencies": {
         "buefy": "^0.6.1",
         "bulma": "^0.6.1",
-        "font-awesome": "^4.7.0"
+        "font-awesome": "^4.7.0",
+        "vue-router": "^3.0.1"
     }
 }

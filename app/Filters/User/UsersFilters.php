@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Filters\Team;
+namespace App\Filters\User;
 
 use Illuminate\Http\Request;
 use App\Filters\FiltersAbstract;
-use App\Filters\Team\{TeamFilter, UserFilters, TimepunchFilter};
+use App\Filters\User\{TeamFilter, UserFilters, TimepunchFilter};
 use Illuminate\Database\Eloquent\Builder;
 
-class TeamFilters extends FiltersAbstract
+class UsersFilters extends FiltersAbstract
 {
 	protected $filters = [
 
-		'user' => UserFilters::class,
+		'user' => UserFilter::class,
 		'team' => TeamFilter::class,
 		'timepunch' => TimepunchFilter::class,
 	];

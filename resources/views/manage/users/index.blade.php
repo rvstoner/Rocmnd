@@ -16,6 +16,7 @@
 
       <div class="card">
         <div class="card-content">
+          {{$users->links('_includes.nav.pagination')}}
           <table class="table is-narrow is-fullwidth">
             <thead>
               <tr>
@@ -32,14 +33,14 @@
             <tbody>
               @foreach ($users as $user)
                 <tr>
-                  <th>Team Name</th>
-                  <td>{{$user->getNameOrUsername()}}</td>
+                  <th>{{$user->team->display_name}}</th>
+                  <td><a href="{{route('users.show', $user->id)}}">{{$user->getNameOrUsername()}}</a></td>
                   <td>
                     @foreach($user->roles as $role)
                       {{ $role->display_name }}
                     @endforeach
                   </td>
-                  <td>{{$user->email}}</td>
+                  <td></td>
                   <td>{{ $user->isActive() }}</td>
                   <td>{{$user->created_at->toFormattedDateString()}}</td>
                   <td class="has-text-right">
@@ -55,6 +56,6 @@
         </div>
       </div> <!-- end of .card -->
 
-      {{$users->links()}}
+      
     </div>
 @endsection
