@@ -123,7 +123,7 @@
       
         <div class="field">
           <hr />
-          <button class="button is-primary is-pulled-right" style="width: 250px;">Edit Profile</button>
+          <button class="button is-primary is-pulled-right" style="width: 250px;">Update Profile</button>
         </div>
       </div> <!-- end of .column -->
     </form>

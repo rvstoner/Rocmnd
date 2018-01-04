@@ -84,5 +84,12 @@ class ProfileController extends Controller
                         ->withErrors($validator)
                         ->withInput();
         }
+        if ($request->get('password') == '') {
+            User::findOrFail($id)->update($request->except('password'));
+        } else {
+            User::findOrFail($id)->update($request->all());
+        }
+        LaraFlash::new()->content("Profile Updated.")->type('info');
+        return redirect()->route('profile.show', ['id' => $id]);
     }
 }
