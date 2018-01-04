@@ -8,7 +8,7 @@
       </div> <!-- end of column -->
 
       <div class="column">
-        <a href="{{route('profile.edit', $user->id)}}" class="button is-primary is-pulled-right"><i class="fa fa-user m-r-10"></i> Edit User</a>
+        <a href="{{route('profile.edit', $user->id)}}" class="button is-primary is-pulled-right"><i class="fa fa-user m-r-10"></i> Edit Profile</a>
       </div>
     </div>
     <hr class="m-t-0">
@@ -76,6 +76,19 @@
 
     <div class="columns">
       <div class="column">
+
+      	<div class="field">
+      		<div class="columns">
+				<div class="column">
+					<label for="pto" class="label">PTO</label>
+					<pre>{{$user->pto}}</pre>
+		        </div>
+				<div class="column">
+					<label for="holiday" class="label">Holiday</label>
+					<pre>{{$user->holiday}}</pre>
+		        </div>
+	        </div>
+        </div>
         
         <div class="field">
           <label for="role" class="label">Role</label>
@@ -94,18 +107,22 @@
         </div>
         
         <div class="field">
-          <label for="home_phone" class="label">Primary Phone</label>
-          <pre>({{$user->home_phone_area}}){{$user->home_phone_prefix}}-{{$user->home_phone_number}}</pre>
-        </div>
+        	<div class="columns">
+				<div class="column">
+					<label for="home_phone" class="label">Primary Phone</label>
+					<pre>({{$user->home_phone_area}}){{$user->home_phone_prefix}}-{{$user->home_phone_number}}</pre>
+				</div>
         
-        <div class="field">
-          <label for="secondary_phone" class="label">Secondary Phone</label>
-          <pre>({{$user->secondary_phone_area}}){{$user->secondary_phone_prefix}}-{{$user->secondary_phone_number}}</pre>
-        </div>
-        
-        <div class="field">
-          <label for="emergency_phone" class="label">Emergency contact</label>
-          <pre>({{$user->emergency_phone_area}}){{$user->emergency_phone_prefix}}-{{$user->emergency_phone_number}}</pre>
+		        <div class="column">
+		          <label for="secondary_phone" class="label">Secondary Phone</label>
+		          <pre>({{$user->secondary_phone_area}}){{$user->secondary_phone_prefix}}-{{$user->secondary_phone_number}}</pre>
+		        </div>
+	        
+		        <div class="column">
+		          <label for="emergency_phone" class="label">Emergency contact</label>
+		          <pre>({{$user->emergency_phone_area}}){{$user->emergency_phone_prefix}}-{{$user->emergency_phone_number}}</pre>
+		        </div>
+	        </div>
         </div>
        
           <div class="field">
