@@ -19,6 +19,8 @@
     @include('_includes.nav.main')
     
         <div id="app">
+
+            @include('_includes.errors.errors')
             @yield('content')
         </div>
 

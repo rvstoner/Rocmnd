@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Validator;
+use LaraFlash;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Payroll\Period;
@@ -42,7 +44,9 @@ class ProfileController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        return view('profile.edit', compact('user'));
     }
 
     /**
@@ -54,6 +58,31 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|min:3|max:50',
+            'last_name' => 'required|min:3|max:50',
+            'home_phone_area' => 'required_with:home_phone_prefix,home_phone_number',
+            'home_phone_prefix' => 'required_with:home_phone_area,home_phone_number',
+            'home_phone_number' => 'required_with:home_phone_prefix,home_phone_area',
+            'secondary_phone_area' => 'required_with:secondary_phone_prefix,secondary_phone_number',
+            'secondary_phone_prefix' => 'required_with:secondary_phone_area,secondary_phone_number',
+            'secondary_phone_number' => 'required_with:secondary_phone_prefix,secondary_phone_area',
+            'emergency_phone_area' => 'required_with:emergency_phone_prefix,emergency_phone_number',
+            'emergency_phone_prefix' => 'required_with:emergency_phone_area,emergency_phone_number',
+            'emergency_phone_number' => 'required_with:emergency_phone_prefix,emergency_phone_area',
+            
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            // foreach ($errors->all() as $message) {
+            //     LaraFlash::new()->content($message)->type('danger');
+
+            // }
+            // $laraFlash = LaraFlash::notifications();
+            return redirect()->route('profile.edit', ['id' => $id])
+                        ->withErrors($validator)
+                        ->withInput();
+        }
     }
 }
