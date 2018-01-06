@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Payroll\{TimePunch, Team, TimePunchEdits,Period};
+use App\Models\Payroll\{TimePunch, Team, TimePunchEdits, Period};
 
 class PayrollController extends Controller
 {
@@ -90,28 +90,31 @@ class PayrollController extends Controller
             'edit_reason' => 'required|max:255',
           ]);
         
-        $clockin = $this->format($request->clockin_time, $request->clockin_date);
-        $clockout = $this->format($request->clockout_time, $request->clockout_date);
+        $clockin = new Carbon($request->clockin_date . ' ' . $request->clockin_time);        
 
         $timepunch = new TimePunch;
         $timepunch->clock_in = $timepunch->roundTime($clockin);
-        $timepunch->clock_out = $timepunch->roundTime($clockout);
         $timepunch->user_id = $request->user;
         $timepunch->reason = $request->reason;
-        $timepunch->shift_date = $clockin->copy()->startofDay();
+        $timepunch->shift = $timepunch->setShift($clockin);
+        $timepunch->shift_date = $timepunch->setShiftDate($clockin);
         $timepunch->edited = 1;
         $timepunch->save();
+        if(!empty($request->clockout_date)){
+            $clockout = new Carbon($request->clockout_date . ' ' . $request->clockout_time);
+            $timepunch->clockout($clockout);
+        }
 
-        $timepunchedits = new TimePunchEdit();
+        $timepunchedits = new TimePunchEdits();
         $timepunchedits->clock_in = $timepunch->clock_in;
         $timepunchedits->clock_out = $timepunch->clock_out;
         $timepunchedits->time_punch_id = $timepunch->id;
         $timepunchedits->user_id = auth()->user()->id;
         $timepunchedits->reason = $timepunch->reason;
-        $timepunch->save();
+        $timepunchedits->save();
 
 
-        // return back();
+        return back();
     }
 
     /**
@@ -154,69 +157,38 @@ class PayrollController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $userid = Auth::id();
-
-        $clockinnew = NULL;
-
-        $clockoutnew = NULL;
+        $this->validateWith([
+            'reason' => 'required',
+            'clockin_date' => 'required_with:clockin_time',
+            'clockin_time' => 'required_with:clockin_date',
+            'clockout_date' => 'required_with:clockout_time',
+            'clockout_time' => 'required_with:clockout_date',            
+          ]);
+        $userid = auth()->user()->id;
 
         $timepunch = TimePunch::where('id', $id)->first();
+        $oldClockin = $timepunch->clock_in;    
+        $oldClockout = $timepunch->clock_out; 
 
-        $timepunch->clock_out->format('m/d/Y');
-
-        $timepunch->clock_out->format('h:i A');
-
-        if(!empty($request->clockin_date) || !empty($timepunch->clock_in)){
-            if (empty($request->clockin_date)){
-                $request->clockin_date = $timepunch->clock_in->format('m/d/Y');
-            }
-
-            if (empty($request->clockin_time)){
-                $request->clockin_time = $timepunch->clock_in->format('h:i A');
-            }
-
-            if(preg_match('~^\d+(?::\d+)*$~', $request->clockin_time)){
-                $clockinnew = Carbon::createFromFormat('m/d/Y h:i', $request->clockin_date . ' ' . $request->clockin_time);
-            }else{
-                $clockinnew = Carbon::createFromFormat('m/d/Y h:i A', $request->clockin_date . ' ' . $request->clockin_time);            
-            }
+        if(!empty($request->clockin_date)){
+            $timepunch->clock_in = new Carbon($request->clockin_date . ' ' . $request->clockin_time);
+            $timepunch->shift_date = $timepunch->setShiftDate($timepunch->clock_in);
+        }    
+        if(!empty($request->clockout_date)){
+            $timepunch->clock_out = new Carbon($request->clockout_date . ' ' . $request->clockout_time);
         }
+        $timepunch->edited = 1;
+        $timepunch->save();
 
-        if(!empty($request->clockout_date) || !empty($timepunch->clock_out)){
-            if (empty($request->clockout_date)){
-                $request->clockout_date = $timepunch->clock_out->format('m/d/Y');
-            }
-
-            if (empty($request->clockout_time)){
-                $request->clockout_time = $timepunch->clock_out->format('h:i A');
-            }
-
-            if(preg_match('~^\d+(?::\d+)*$~', $request->clockout_time)){
-                $clockoutnew = Carbon::createFromFormat('m/d/Y h:i', $request->clockout_date . ' ' . $request->clockout_time);
-            }else{
-                $clockoutnew = Carbon::createFromFormat('m/d/Y h:i A', $request->clockout_date . ' ' . $request->clockout_time);            
-            }
-        }
-            
-        
-        // dd($clockoutnew);
         TimePunchEdits::create([
-            'clock_in' => $timepunch->clock_in,
-            'clock_out' => $timepunch->clock_out,
+            'clock_in' => $oldClockin,
+            'clock_out' => $oldClockout,
             'user_id' => $userid,
             'reason' => $request->reason,
             'time_punch_id' => $timepunch->id
         ]);
 
-        if($clockinnew->hour <= 7){
-            $timepunch->shift_date = $clockinnew->subDay()->startOfDay();
-        }
-        $timepunch->edited = 1;
-        $timepunch->clock_in = $clockinnew;
-        $timepunch->clock_out = $clockoutnew;
-        $timepunch->save();
-
-        return $this->index();
+        return redirect()->route('manage.dashboard');
     }
     
     /**
@@ -241,15 +213,6 @@ class PayrollController extends Controller
         $user->getHours();
 
         return view('manage.timesheets.user', compact('user'));
-    }
-
-    protected function format($time, $date)
-    {
-        if(preg_match('~^\d+(?::\d+)*$~', $time)){
-                return Carbon::createFromFormat('m/d/Y H:i', $date . ' ' . $time);
-            }else{
-                return Carbon::createFromFormat('m/d/Y h:i A', $date . ' ' . $time);            
-            }
     }
 
 }

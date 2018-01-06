@@ -11,6 +11,7 @@ class ManageController extends Controller
     {
       return redirect()->route('manage.dashboard');
     }
+    
     public function dashboard()
     {
       return view('manage.dashboard');

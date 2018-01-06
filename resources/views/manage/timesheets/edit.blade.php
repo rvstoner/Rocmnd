@@ -1,7 +1,8 @@
 @extends('layouts.manage')
 
 @section('content')
-
+<section class="section">
+	<div class="container">
 <form action="{{route('timesheets.update', $timepunch->id)}}" method="POST">
 	{{method_field('PUT')}}
 	{{csrf_field()}}
@@ -103,8 +104,8 @@
 		</div>
 	</div>
 </form>
-
-
+</div>
+</section>
 
 @endsection
 
@@ -116,7 +117,7 @@
         formatAmPm: false,
         clockinDate: new Date("{!! $timepunch->clock_in->toDateTimeString() !!}"),
         clockoutDate: new Date("{!! $timepunch->clock_out->toDateTimeString() !!}"),
-        clockinTime: new Date("{!! $timepunch->clock_out->toDateTimeString() !!}"),
+        clockinTime: new Date("{!! $timepunch->clock_in->toDateTimeString() !!}"),
         clockoutTime: new Date("{!! $timepunch->clock_out->toDateTimeString() !!}")
       },
      computed: {

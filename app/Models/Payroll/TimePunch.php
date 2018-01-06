@@ -80,7 +80,6 @@ class TimePunch extends Model
             $item->getTimes($time);
         });
         $shift = $shifts->where('clockin', '<=', $time)->where('clockout', '>', $time)->first();
-
         return $shift;
     }
 
@@ -104,6 +103,14 @@ class TimePunch extends Model
         $shift = $timePunch->getShift($time);
     
         return $shift->shift;
+    }
+
+    public static function setShiftDate($time)
+    {
+        $timePunch = new TimePunch();
+        $shift = $timePunch->getShift($time);
+        
+        return $shift->clockin;
     }
 
     public function clockout($time)

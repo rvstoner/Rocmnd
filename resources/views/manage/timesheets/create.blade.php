@@ -18,9 +18,9 @@
 										<div class="control">
 											<div class="select">
 												<select name="user">
-													@foreach($users as $user)
 													<option>Choose a user</option>
-													<option value={{$user->id}}>{{$user->getNameOrUsername()}}</option>
+													@foreach($users as $user)
+														<option value={{$user->id}}>{{$user->getNameOrUsername()}}</option>
 													@endforeach
 												</select>
 											</div>

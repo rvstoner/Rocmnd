@@ -16,7 +16,7 @@ class IpAddress extends Model
         'address',
     ];
 
-     public $timestamps = false;
+    public $timestamps = false;
 
     public function team()
     {

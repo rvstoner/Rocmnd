@@ -47,12 +47,6 @@ class ReportController extends Controller
             'time' => 'required',
         ]);
 
-        if(preg_match('~^\d+(?::\d+)*$~', $request->time)){
-            $newDate = Carbon::createFromFormat('m/d/Y h:i', $request->date . ' ' . $request->time);
-        }else{
-            $newDate = Carbon::createFromFormat('m/d/Y h:i A', $request->date . ' ' . $request->time);            
-        }
-
         $report = new Report();
         $type = 'Memo';
 
@@ -63,7 +57,7 @@ class ReportController extends Controller
         $report->type = $type;
         $report->slug = $request->slug;
         $report->body = $request->body;
-        $report->date = $newDate;
+        $report->date = new Carbon($request->date . ' ' . $request->time);
 
         $report->save();
         

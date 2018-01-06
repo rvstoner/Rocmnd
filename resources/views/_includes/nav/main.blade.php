@@ -47,7 +47,7 @@
                   {{ csrf_field() }}
                   <div class="field has-addons"> 
                     <div class="control">
-                      <div class="select">
+                      <div class="select is-large">
                         <select name="reason">
                           <option value="Scheduled">Scheduled</option>
                           <option value="Called in">Called in</option>
@@ -58,7 +58,7 @@
                       </div>
                     </div> 
                     <div class="control">         
-                      <input class="button is-primary" type="submit" value="Clock In">
+                      <input class="button is-primary is-large" type="submit" value="Clock In">
                     </div>
                   </div>
                 </form>                    
