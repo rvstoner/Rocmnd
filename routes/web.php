@@ -35,6 +35,7 @@ Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|dir
 	route::get('usertimesheet/{id}', 'PayrollController@user')->name('timesheets.user');
 	Route::resource('/timesheets', 'PayrollController');
 	Route::resource('/facilities', 'TeamController');
+	Route::resource('/reports', 'ReportController');
 });
 Route::middleware('auth')->group(function () {
     

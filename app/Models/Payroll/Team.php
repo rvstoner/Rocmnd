@@ -3,6 +3,7 @@
 namespace App\Models\Payroll;
 
 use App\User;
+use App\Models\Report;
 use App\Filters\Team\TeamFilters;
 use App\Models\Payroll\{Shift, team};
 use Illuminate\Database\Eloquent\Model;
@@ -24,9 +25,15 @@ class Team extends Model
             $Query->latest('shift_date')->where('clock_out', NULL);
         });
     }
+    
     public function users()
     {
         return $this->hasMany('App\User');
+    }
+
+    public function reports()
+    {
+        return $this->hasMany('App\Models\Report');
     }
 
     public function shifts()

@@ -132,6 +132,9 @@ class TimePunch extends Model
 
     public function calulate()
     {
+        if(empty($this->clock_out)){
+            return $this->clock_in->diffInSeconds(Carbon::now());
+        }
         return $this->clock_in->diffInSeconds($this->clock_out);
     }
 

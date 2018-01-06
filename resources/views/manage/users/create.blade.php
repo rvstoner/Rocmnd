@@ -19,9 +19,8 @@
             <p class="control">
               <div class="select is-rounded is-fullwidth">
                 <select name="team">
-                  <option value="">Choose a Facility</option>
                   @foreach($teams as $team)
-                    <option value="{{$team->id}}">{{$team->display_name}}</option>
+                    <option value="{{$team->id}}" @if($team->id == Auth::user()->id) selected="selected"@endif>{{$team->display_name}}</option>
                   @endforeach
                 </select>
               </div>            

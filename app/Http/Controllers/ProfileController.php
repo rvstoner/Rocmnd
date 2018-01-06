@@ -87,6 +87,7 @@ class ProfileController extends Controller
         if ($request->get('password') == '') {
             User::findOrFail($id)->update($request->except('password'));
         } else {
+            $request->password = Hash::make($request->password);
             User::findOrFail($id)->update($request->all());
         }
         LaraFlash::new()->content("Profile Updated.")->type('info');

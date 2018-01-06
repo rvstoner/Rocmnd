@@ -74,10 +74,13 @@ class LaratrustSetupTables extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists('permission_user');
         Schema::dropIfExists('permission_role');
         Schema::dropIfExists('permissions');
         Schema::dropIfExists('role_user');
         Schema::dropIfExists('roles');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+
     }
 }

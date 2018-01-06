@@ -37,6 +37,8 @@ class CreateTimePunchEditsTable extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists('time_punch_edits');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

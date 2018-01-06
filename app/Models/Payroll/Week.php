@@ -19,6 +19,10 @@ class Week extends Model
     	$this->end = $this->start->copy()->endOfWeek();  
     	$this->breakIntoDays($date);
         $this->checkForOverTime();
+
+        if($this->hours < 0){
+            $this->hours = 0;
+        }
     }
 
     public function breakIntoDays($date)

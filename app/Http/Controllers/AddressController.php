@@ -48,6 +48,10 @@ class AddressController extends Controller
   		$ip->team_id = $request->facility_id; 
         $ip->save();
 
+        $ips = IpAddress::all();
+        Cache::forget('ipAdresses');
+        Cache::forever('ipAdresses', $ips);
+
         LaraFlash::new()->content('Successfully added a new Ip address.')->type('success')->priority(5);
         return back();
     }
@@ -81,6 +85,10 @@ class AddressController extends Controller
         $ip = IpAddress::findOrFail($id)->with("team");
   		$ip->address = $request->address; 
         $ip->save();
+
+        $ips = IpAddress::all();
+        Cache::forget('ipAdresses');
+        Cache::forever('ipAdresses', $ips);
 
         LaraFlash::new()->content('Successfully added a new Ip address.')->type('success')->priority(5);
         return view('manage.address.show', compact('$id'));    }

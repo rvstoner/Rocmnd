@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateShiftsTable extends Migration
+class CreateReportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,19 @@ class CreateShiftsTable extends Migration
      */
     public function up()
     {
-        Schema::create('shifts', function (Blueprint $table) {
+        Schema::create('reports', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->unsigned();
             $table->integer('team_id')->unsigned();
-            $table->integer('shift_start');
-            $table->integer('shift_end');
-            $table->integer('shift');
+            $table->string('title');
+            $table->string('class_type');
+            $table->string('type')->nullable();
+            $table->string('slug')->unique();
+            $table->text('body');
+            $table->timestamp('date');
+            $table->timestamps();
 
-            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
-            $table->unique( array('team_id','shift') ); 
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -33,7 +37,7 @@ class CreateShiftsTable extends Migration
     public function down()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Schema::dropIfExists('shifts');
+        Schema::dropIfExists('reports');
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

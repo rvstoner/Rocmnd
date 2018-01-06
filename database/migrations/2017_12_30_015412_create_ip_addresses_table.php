@@ -15,6 +15,7 @@ class CreateIpAddressesTable extends Migration
     {
         Schema::create('ip_addresses', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('team_id')->unsigned();
             $table->bigInteger('address');
         });
     }
@@ -26,6 +27,8 @@ class CreateIpAddressesTable extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists('ip_addresses');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

@@ -15,6 +15,7 @@
 			<template>
 			    <b-field label="Select a date">
 			        <b-datepicker 
+		            	v-model="clockinDate"
 		            	name="clockin_date"
 			            placeholder="Edit clock in date"
 			            icon="calendar-today">
@@ -36,7 +37,8 @@
 			        <b-field label="Select time">
 			            <b-timepicker
 			            	name="clockin_time"
-			                placeholder="Edit clock in time"
+    				        v-model="clockinTime"
+							placeholder="Edit clock in time"
 			                icon="clock"
 			                :hour-format="format"
 			                :readonly="false">
@@ -56,6 +58,7 @@
 			<template>
 			    <b-field label="Select a date">
 			        <b-datepicker
+				        v-model="clockoutDate"
 		            	name="clockout_date"
 			            placeholder="Edit clock out date"
 			            icon="calendar-today">
@@ -74,6 +77,7 @@
 			        <b-field label="Select time">
 			            <b-timepicker
 			            	name="clockout_time"
+					        v-model="clockoutTime"
 			                placeholder="Edit clock out date"
 			                icon="clock"
 			                :hour-format="format"
@@ -109,7 +113,11 @@
     var app = new Vue({
       el: '#app',
       data: {
-        formatAmPm: false
+        formatAmPm: false,
+        clockinDate: new Date("{!! $timepunch->clock_in->toDateTimeString() !!}"),
+        clockoutDate: new Date("{!! $timepunch->clock_out->toDateTimeString() !!}"),
+        clockinTime: new Date("{!! $timepunch->clock_out->toDateTimeString() !!}"),
+        clockoutTime: new Date("{!! $timepunch->clock_out->toDateTimeString() !!}")
       },
      computed: {
         format() {

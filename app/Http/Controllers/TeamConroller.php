@@ -62,7 +62,8 @@ class TeamController extends Controller
      */
     public function show($id)
     {
-        $facility = Team::where('id', $id)->with(['users', 'shifts'])->first();;
+        $facility = Team::where('id', $id)->with(['users', 'shifts', 'addresses'])->first();
+        
         return view('manage.facilities.show', compact('facility'));
     }
 

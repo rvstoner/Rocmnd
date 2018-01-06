@@ -4,6 +4,7 @@ return [
     'role_structure' => [
         'server_administrator' => [
             'profile' => 'c,r,u',
+            'facilities' => 'c,r,u,d',
             'serveradministrator' => 'c,r,u,d',
             'payrollmanager' => 'c,r,u,d',
             'director' => 'c,r,u,d',
@@ -17,6 +18,7 @@ return [
         ],
         'payroll_manager' => [
             'profile' => 'c,r,u',
+            'facilities' => 'c,r,u,d',
             'serveradministrator' => 'r',
             'payrollmanager' => 'c,r,u,d',
             'director' => 'c,r,u,d',
@@ -29,7 +31,8 @@ return [
             'users' => 'c,r,u,d'
         ],
         'director' => [
-            'profile' => 'c,r,u',
+            'profile' => 'c,r,u',            
+            'facilities' => 'r',
             'serveradministrator' => 'r',
             'payrollmanager' => 'r',
             'director' => 'r,u',
@@ -43,6 +46,7 @@ return [
         ],
         'assistant_director' => [
             'profile' => 'c,r,u',
+            'facilities' => 'r',
             'serveradministrator' => 'r',
             'payrollmanager' => 'r',
             'director' => 'r',
@@ -56,6 +60,7 @@ return [
         ],
         'administrator' => [
             'profile' => 'c,r,u',
+            'facilities' => 'r',
             'serveradministrator' => 'r',
             'payrollmanager' => 'r',
             'director' => 'r',
@@ -69,6 +74,7 @@ return [
         ],
         'supervisor' => [
             'profile' => 'r,u',
+            'facilities' => 'r',
             'serveradministrator' => 'r',
             'payrollmanager' => 'r',
             'director' => 'r',
@@ -81,6 +87,7 @@ return [
         ],
         'parttimesupervisor' => [
             'profile' => 'r,u',
+            'facilities' => 'r',
             'serveradministrator' => 'r',
             'payrollmanager' => 'r',
             'director' => 'r',
@@ -93,6 +100,7 @@ return [
         ],
         'fulltime' => [
             'profile' => 'r,u',
+            'facilities' => 'r',
             'serveradministrator' => 'r',
             'payrollmanager' => 'r',
             'director' => 'r',
@@ -104,6 +112,7 @@ return [
         ],
         'parttime' => [
             'profile' => 'r,u',
+            'facilities' => 'r',
             'serveradministrator' => 'r',
             'payrollmanager' => 'r',
             'director' => 'r',

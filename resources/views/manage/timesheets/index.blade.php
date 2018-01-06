@@ -24,18 +24,18 @@
 				<td><a href="{{ route('timesheets.user',$user->id) }}">{{ $user->getNameOrUsername() }}</a></td>
 				@foreach($user->payroll->period->weeks as $week)
 				@if(empty($week->hours))
-					<td>0</td>
+					<td>Hours: 0</td>
 				@else
-					<td>Hours {{ floor($week->hours/60/60) }}:{{ gmdate("i", $week->hours) }}</td>
+					<td>Hours: {{ floor($week->hours/60/60) }}:{{ gmdate("i", $week->hours) }}</td>
 				@endif
 				@if(empty($week->overtime))
-					<td>0</td>
+					<td>OT: 0</td>
 				@else
-					<td>OT {{ floor($week->overtime/60/60) }}:{{ gmdate("i", $week->overtime) }}</td>
+					<td>OT: {{ floor($week->overtime/60/60) }}:{{ gmdate("i", $week->overtime) }}</td>
 				@endif
 				@if ($loop->first)
 					@if(empty($week->rollover))
-						<td>0</td>
+						<td></td>
 					@else
 						<td>{{ floor($week->rollover/60/60) }}:{{ gmdate("i", $week->rollover) }}</td>
 					@endif

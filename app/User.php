@@ -4,6 +4,7 @@ namespace App;
 
 use DB;
 use Carbon\Carbon;
+use App\Models\Report;
 use App\Filters\User\UsersFilters;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Notifications\Notifiable;
@@ -82,9 +83,18 @@ class User extends Authenticatable
     }
 
     public function IPallowed()
-    {
-        
-        return $this->cachedIps();
+    {       
+        if(auth()->user()->hasRole('serveradministrator')){
+            return true;
+        }
+        $ips = $this->cachedIps();
+        $userIp = ip2long(request()->getClientIp());
+        foreach ($ips as $ip){
+            if ($ip->address == $userIp){
+                return true;
+            }
+        }
+        return false;
     }
     /**
      * Tries to return all the cached Ip's.
@@ -95,15 +105,11 @@ class User extends Authenticatable
      */
     public function cachedIps()
     {
-        $cacheKey = 'ipAdresses';
-
-        // if (Cache::has($cacheKey)) {
-        //     //
-        // }
-
-        return Cache::remember($cacheKey, '60', function () {
-            return DB::table('ip_addresses')->get();
+        $cachedIps = Cache::rememberForever('ipAdresses', function() {
+           return DB::table('ip_addresses')->get();
         });
+
+        return $cachedIps;
     }
 
     public function team()
@@ -129,6 +135,11 @@ class User extends Authenticatable
     public function timepunches()
     {
         return $this->hasMany('App\Models\Payroll\TimePunch');
+    }
+
+    public function reports()
+    {
+        return $this->hasMany('App\Models\Report');
     }
 
     public function getTimepunches($start, $endDate = NULL)
@@ -170,7 +181,7 @@ class User extends Authenticatable
     
     public function scopeHasSameTeam($query)
     {
-        if(auth()->user()->can('create-facilitiess')){
+        if(auth()->user()->can('create-facilities')){
             return $query;
         }
         return $query->where('team_id', auth()->user()->team_id);
