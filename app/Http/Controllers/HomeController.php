@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use LaraFlash;
+use Carbon\Carbon;
+use App\Models\Report;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,6 +26,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $reportTypes = Report::where('date', '>', Carbon::now())->where('team_id', auth()->user()->team_id)->oldest('date')->get();
+
+        return view('home', compact('reportTypes'));
     }
 }

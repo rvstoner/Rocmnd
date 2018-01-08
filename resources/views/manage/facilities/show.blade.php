@@ -21,13 +21,13 @@
     </h2>
   </div>
 </section>
+@permission('create-facilities')
 <section class="section">
   <div class="container">
     <div class="columns">
       <div class="column">
         <h1 class="title">Shifts</h1>
       </div> <!-- end of column -->
-
       <div class="column">
         <a href="{{route('shifts.create', $facility->id)}}" class="button is-primary is-pulled-right"><i class="fa fa-plus-square m-r-10"></i>Add a shift.</a>
       </div>
@@ -87,6 +87,7 @@
     </ul>
   </div>
 </section>
+@endpermission
 <section class="section">
   <div class="container">
     <div class="columns">

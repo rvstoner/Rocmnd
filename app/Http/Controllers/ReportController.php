@@ -16,7 +16,9 @@ class ReportController extends Controller
      */
     public function index()
     {
-        //
+        $reports = Report::hasSameTeam()->latest()->paginate(20);
+
+        return view('manage.report.index', compact('reports'));
     }
 
     /**
@@ -48,7 +50,7 @@ class ReportController extends Controller
         ]);
 
         $report = new Report();
-        $type = 'Memo';
+        $type = 'meeting';
 
         $report->user_id = auth()->user()->id;
         $report->title = $request->title;
@@ -60,6 +62,8 @@ class ReportController extends Controller
         $report->date = new Carbon($request->date . ' ' . $request->time);
 
         $report->save();
+
+        return redirect()->route('manage.dashboard');
         
     }
 
@@ -69,9 +73,13 @@ class ReportController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($param)
     {
-        //
+        $report = Report::where('id', $param)
+            ->orWhere('slug', $param)
+            ->firstOrFail();
+
+            return view('manage.report.show',  compact('report'));
     }
 
     /**
@@ -80,9 +88,14 @@ class ReportController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($param)
     {
-        //
+        $report = Report::where('id', $param)
+            ->orWhere('slug', $param)
+            ->firstOrFail();
+        $teams = Team::all();
+
+        return view('manage.report.edit',  compact('report','teams'));
     }
 
     /**

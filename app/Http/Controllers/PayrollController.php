@@ -179,7 +179,7 @@ class PayrollController extends Controller
         }
         $timepunch->edited = 1;
         $timepunch->save();
-
+// dd($oldClockout);
         TimePunchEdits::create([
             'clock_in' => $oldClockin,
             'clock_out' => $oldClockout,

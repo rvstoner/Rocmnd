@@ -37,4 +37,12 @@ class Report extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function scopeHasSameTeam($query)
+    {
+        if(auth()->user()->can('create-facilities')){
+            return $query;
+        }
+        return $query->where('team_id', auth()->user()->team_id);
+    }
 }
