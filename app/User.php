@@ -84,18 +84,26 @@ class User extends Authenticatable
 
     public function IPallowed()
     {       
-        if(auth()->user()->hasRole('serveradministrator')){
-            return true;
-        }
+        // if(auth()->user()->hasRole('serveradministrator')){
+        //     return true;
+        // }
         $ips = $this->cachedIps();
-        $userIp = ip2long(request()->getClientIp());
+        $userIp = request()->getClientIp();
 
-        if($ips->contains(function ($value, $key) use ($userIp) {
-            return $value = $userIp;
-            })){
+        foreach($ips as $ip){
+            if($ip->address === $userIp){
                 return true;
+            }
         }
         return false;
+
+        // if($ips->contains(function ($value, $key) use ($userIp) {
+        //     dump($value);
+        //     return $value = $userIp;
+        //     })){
+        //         return true;
+        // }
+        // return false;
     }
     /**
      * Tries to return all the cached Ip's.

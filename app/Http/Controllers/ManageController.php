@@ -32,7 +32,9 @@ class ManageController extends Controller
 
     public function address()
     {
-        
-		return view('manage.address');
+        $user = new User();
+        $ips = $user->cachedIps();
+        $userIp = request()->getClientIp();
+		return view('manage.address', compact('ips', 'userIp'));
     }
 }

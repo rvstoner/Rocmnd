@@ -36,6 +36,7 @@ Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|dir
 	Route::resource('/timesheets', 'PayrollController');
 	Route::resource('/facilities', 'TeamController');
 	Route::resource('/reports', 'ReportController');
+	Route::get('/ipcheck', 'manageController@address')->middleware('role:serveradministrator');
 });
 Route::middleware('auth')->group(function () {
     
