@@ -89,10 +89,11 @@ class User extends Authenticatable
         }
         $ips = $this->cachedIps();
         $userIp = ip2long(request()->getClientIp());
-        foreach ($ips as $ip){
-            if ($ip->address == $userIp){
+
+        if($ips->contains(function ($value, $key) use ($userIp) {
+            return $value = $userIp;
+            })){
                 return true;
-            }
         }
         return false;
     }
@@ -189,6 +190,7 @@ class User extends Authenticatable
 
     public function scopeFilter(Builder $builder, $request, array $filters = [])
     {
+        dd('$request');
         return (new UsersFilters($request))->add($filters)->filter($builder);
     }
 }

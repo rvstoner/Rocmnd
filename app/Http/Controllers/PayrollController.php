@@ -45,8 +45,6 @@ class PayrollController extends Controller
             $user->getHours();
         }
         $teams = $users->groupBy('team_id');
-
-        // dd($users);
         
         return view('manage.timesheets.index', compact('teams'));
         

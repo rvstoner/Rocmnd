@@ -14,7 +14,7 @@ abstract class FiltersAbstract
 
 	public function __construct(Request $request)
 	{
-		$this->request = $request;
+		$this->request = $request; dd($this);
 	}
 
 	public function filter(Builder $builder)

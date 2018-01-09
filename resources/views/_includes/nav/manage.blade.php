@@ -12,7 +12,7 @@
     </p>
     <ul class="menu-list">
       <li><a href="#">Policies</a></li>
-      <li><a href="#">Memos</a></li>
+      <li><a href="{{route('reports.create')}}" class="{{Nav::isResource('reports')}}">Memos</a></li>
     </ul>
 
     <p class="menu-label">

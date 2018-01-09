@@ -81,6 +81,31 @@
           </div>
 
           <div class="field">
+            <label for="address" class="label">Address</label>
+            <pre>{{$user->address}}</pre>
+          </div> 
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label for="address_city" class="label">City</label>
+                <pre>{{$user->address_city}}</pre>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label for="address_state" class="label">State</label>
+                <pre>{{$user->address_state}}</pre>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label for="address_zip" class="label">Zip</label>
+                <pre>{{$user->address_zip}}</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
             <label for="password" class="label">Password</label>
             {{-- <b-radio-group> --}}
               <div class="field">

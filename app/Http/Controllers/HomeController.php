@@ -26,7 +26,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $reportTypes = Report::where('date', '>', Carbon::now())->where('team_id', auth()->user()->team_id)->oldest('date')->get();
+        $reportTypes = Report::where('date', '>', Carbon::now())->where('team_id', auth()->user()->team_id)->oldest('date')->with('user')->get();
 
         return view('home', compact('reportTypes'));
     }

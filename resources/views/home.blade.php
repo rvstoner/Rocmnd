@@ -20,7 +20,8 @@
             <span class='is-pulled-right'>{{ $report->date->diffForHumans() }}</span>
             <p>
                 {{ $report->body }} 
-            </p>
+            </p>            
+            <span class='is-pulled-right'>From: {{ $report->user->getNameOrUsername() }}</span>
         </b-message>
         @endforeach
     </section>
