@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-      $users = User::orderBy('id', 'desc')->with('roles', 'team')->paginate(20);
+      $users = User::hasSameTeam()->orderBy('id', 'desc')->with('roles', 'team')->paginate(20);
       
       return view('manage.users.index')->withUsers($users);
     }

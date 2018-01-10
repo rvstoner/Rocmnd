@@ -9,7 +9,9 @@
       </div> <!-- end of column -->
 
       <div class="column">
+        @permission(strtolower('update-facilities'))
         <a href="{{route('facilities.edit', $facility->id)}}" class="button is-primary is-pulled-right"><i class="fa fa-pencil-square-o m-r-10"></i> Edit Facility</a>
+        @endpermission
       </div>
     </div>
     <hr class="m-t-0">

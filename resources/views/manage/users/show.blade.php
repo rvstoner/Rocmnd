@@ -8,7 +8,9 @@
       </div> <!-- end of column -->
 
       <div class="column">
-        <a href="{{route('users.edit', $user->id)}}" class="button is-primary is-pulled-right"><i class="fa fa-user m-r-10"></i> Edit User</a>
+        @permission(strtolower('update-' . $user->roles->first()->name))
+          <a href="{{route('users.edit', $user->id)}}" class="button is-primary is-pulled-right"><i class="fa fa-user m-r-10"></i> Edit User</a>
+        @endpermission
       </div>
     </div>
     <hr class="m-t-0">
@@ -22,13 +24,24 @@
             <button class="button is-primary" slot="trigger">Time punches</button>
             <div class="notification">
               <div class="content">
-                  @foreach($user->timepunches as $timepunch)
-                    <div class="column"><strong>Date:</strong> {{ $timepunch->shift_date->format('m/d/Y') }} <strong>Clock in:</strong> {{ $timepunch->clock_in->format('h:i A') }} <strong>Clock out:</strong> {{ $timepunch->clock_out->format('h:i A') }}
-                      @permission(strtolower('update-' . $timepunch->user->roles->first()->name))
-                        <a class="button is-danger is-outlined is-pulled-right" href="{{route('timesheets.edit', $timepunch->id)}}">Edit</a>
-                      @endpermission
-                    </div>
-                  @endforeach
+                @foreach($user->timepunches as $timepunch)
+                <div class="columns">
+                  <div class="column">
+                    <strong>Date:</strong> {{ $timepunch->shift_date->format('m/d/Y') }}
+                  </div> 
+                  <div class="column">
+                    <strong>Clock in:</strong> {{ $timepunch->clock_in->format('h:i A') }}
+                  </div>
+                  <div class="column">
+                    <strong>Clock out:</strong> {{ $timepunch->clock_out->format('h:i A') }}
+                  </div>
+                  <div class="column">
+                    @permission(strtolower('update-' . $user->roles->first()->name))
+                    <a class="button is-danger is-outlined is-pulled-right" href="{{route('timesheets.edit', $timepunch->id)}}">Edit</a>
+                    @endpermission
+                  </div>
+                </div>
+                @endforeach
               </div>
             </div>
           </b-collapse>
@@ -42,10 +55,10 @@
       <div class="column">
         
         <div class="field">
-          <label for="role" class="label">Role</label>
+          <label for="role" class="label">Position</label>
           <ul>
             @forelse ($user->roles as $role)
-              <pre><li>{{$role->display_name}} ({{$role->description}})</li></pre>
+              <pre><li>{{$role->display_name}}</li></pre>
             @empty
               <p>This user has not been assigned a role yet</p>
             @endforelse

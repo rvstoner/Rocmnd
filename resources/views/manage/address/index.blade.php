@@ -30,9 +30,9 @@
                 <td>{{ $facility->display_name }}</td>
                 <td></td>
                 <td>
-                  {{-- @permission('create-facilities') --}}
+                  @permission('create-facilities')
                     <a href="{{route('address.create', $facility->id)}}" class="button is-primary is-pulled-right"><i class="fa fa-user-plus m-r-10"></i> Add an Ip address</a>
-                  {{-- @endpermission --}}
+                  @endpermission
                 </td>
               </tr>
               @if($facility->addresses->count())
