@@ -198,7 +198,6 @@ class User extends Authenticatable
 
     public function scopeFilter(Builder $builder, $request, array $filters = [])
     {
-        dd('$request');
         return (new UsersFilters($request))->add($filters)->filter($builder);
     }
 }
