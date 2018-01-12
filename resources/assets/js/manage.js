@@ -1,11 +1,14 @@
 const accordions = document.getElementsByClassName('has-submenu')
 const adminSlideButton = document.getElementById('admin-slideout-button')
+const clockSubmit = document.getElementById('clock-submit')
 
 function setSubmenuStyles (submenu, maxHeight, margins) {
   submenu.style.maxHeight = maxHeight
   submenu.style.marginTop = margins
   submenu.style.marginBottom = margins
 }
+
+clockSubmit.onclick = "this.disabled=true;"
 
 adminSlideButton.onclick = function () {
   this.classList.toggle('is-active');

@@ -50,6 +50,8 @@ class User extends Authenticatable
         'image',
         'hire_date',
         'fire_date',
+        'pto_set_date',
+        'pto_amount',
     ];
 
     /**
@@ -67,7 +69,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $dates = [
-        'hire_date', 'fire_date',
+        'hire_date', 'fire_date', 'pto_set_date',
     ];
 
     public function  getName()

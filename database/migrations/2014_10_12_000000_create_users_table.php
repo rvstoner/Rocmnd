@@ -37,6 +37,8 @@ class CreateUsersTable extends Migration
             $table->string('emergency_phone_area',3)->nullable();
             $table->string('emergency_phone_prefix',3)->nullable();
             $table->string('emergency_phone_number',4)->nullable();
+            $table->integer('pto_amount')->nullable();
+            $table->date('pto_set_date')->nullable();
             $table->string('password');
             $table->string('image')->nullable();
             $table->date('hire_date')->nullable();

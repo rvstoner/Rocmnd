@@ -42,7 +42,7 @@
                   </td>
                   <td></td>
                   <td>{{ $user->isActive() }}</td>
-                  <td>{{$user->created_at->toFormattedDateString()}}</td>
+                  <td>{{ empty($user->hire_date) ? $user->created_at->toFormattedDateString() : $user->hire_date->toFormattedDateString()}}</td>
                   <td class="has-text-right">
                     <a class="button is-outlined m-r-5" href="{{route('users.show', $user->id)}}">View</a>
                     @permission(strtolower('update-' . $user->roles->first()->name))

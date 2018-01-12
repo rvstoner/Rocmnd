@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|director|assistantdirector|administrator')->group(function () {
+Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|director|assistantdirector|administrator|parttimesupervisor')->group(function () {
 	Route::get('/', 'ManageController@index');
 	Route::get('/dashboard', 'ManageController@dashboard')->name('manage.dashboard');
 	Route::resource('/users', 'UserController');
@@ -36,6 +36,9 @@ Route::prefix('manage')->middleware('role:serveradministrator|payrollmanager|dir
 	Route::resource('/timesheets', 'PayrollController');
 	Route::resource('/facilities', 'TeamController');
 	Route::resource('/reports', 'ReportController');
+	Route::resource('/pto', 'PtoController', ['except' => [
+		'destroy', 'create', 'show'
+	]]);
 	Route::get('/ipcheck', 'manageController@address')->middleware('role:serveradministrator');
 });
 Route::middleware('auth')->group(function () {

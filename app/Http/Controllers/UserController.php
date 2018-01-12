@@ -5,6 +5,7 @@ use DB;
 use Hash;
 use Input;
 use LaraFlash;
+use Carbon\Carbon;
 use App\{User, Role};
 use Illuminate\Http\Request;
 use App\Models\Payroll\Team;
@@ -74,6 +75,7 @@ class UserController extends Controller
       $user->team_id = $team;
       $user->email = $request->email;
       $user->password = Hash::make($password);
+      $user->hire_date = Carbon::now()->startOfDay();
       $user->save();
       
       if ($request->roles) {

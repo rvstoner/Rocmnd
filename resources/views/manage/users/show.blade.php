@@ -24,7 +24,7 @@
             <button class="button is-primary" slot="trigger">Time punches</button>
             <div class="notification">
               <div class="content">
-                @foreach($user->timepunches as $timepunch)
+                @forelse($user->timepunches as $timepunch)
                 <div class="columns">
                   <div class="column">
                     <strong>Date:</strong> {{ $timepunch->shift_date->format('m/d/Y') }}
@@ -33,7 +33,11 @@
                     <strong>Clock in:</strong> {{ $timepunch->clock_in->format('h:i A') }}
                   </div>
                   <div class="column">
+                    @if(!empty($timepunch->clock_out))
                     <strong>Clock out:</strong> {{ $timepunch->clock_out->format('h:i A') }}
+                    @else
+                    <strong>Clock out:</strong> {{ Carbon\Carbon::now()->format('h:i A') }}
+                    @endif
                   </div>
                   <div class="column">
                     @permission(strtolower('update-' . $user->roles->first()->name))
@@ -41,7 +45,9 @@
                     @endpermission
                   </div>
                 </div>
-                @endforeach
+                @empty
+                  <p>This this user has not worked any shifts yet!</p>
+                @endforelse
               </div>
             </div>
           </b-collapse>

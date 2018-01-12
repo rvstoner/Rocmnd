@@ -40,7 +40,7 @@
             @if (Auth::user()->isClockedIn())        
                 <form class="navbar-item" role="form" method="POST" action="{{ route('clockout') }}">
                     {{ csrf_field() }}           
-                    <input class="button is-primary is-large" type="submit" value="Clock Out">
+                    <input class="button is-primary is-large" type="submit" value="Clock Out" id="clock-submit">
                 </form>
             @else        
                 <form class="navbar-item" role="form" method="POST" action="{{ route('clockin') }}">
@@ -58,7 +58,7 @@
                       </div>
                     </div> 
                     <div class="control">         
-                      <input class="button is-primary is-large" type="submit" value="Clock In">
+                      <input class="button is-primary is-large" type="submit" value="Clock In" id="clock-submit">
                     </div>
                   </div>
                 </form>                    

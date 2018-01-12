@@ -46,7 +46,7 @@ class PermissionController extends Controller
         $permission->description = $request->description;
         $permission->save();
         $serveradministrator->attachPermission($permission);
-        Session::flash('success', 'Permission has been successfully added');
+        LaraFlash::new()->content('Permission has been successfully added')->type('success')->priority(5);
         return redirect()->route('permissions.index');
       } elseif ($request->permission_type == 'crud') {
         $this->validateWith([

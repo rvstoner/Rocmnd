@@ -35,15 +35,24 @@
               		@if(array_has($week, 'timepunches'))
               		@forelse($week->timepunches as $timepunch)
               		<tr>
+                    
               			<th scope="col" colspan='2'>Reason: 
               				@if($timepunch->reason)
               				{{ $timepunch->reason }}
               				@endif
-              			</th>
+              			</th>                    
               			<td scope="col">{{ $timepunch->clock_in->toDayDateTimeString() }}</td>
-              			<td scope="col">{{ $timepunch->clock_out->toDayDateTimeString() }}</td>
-              			<td>Hours</td>
-              			<td>{{ floor(($timepunch->clock_out->timestamp - $timepunch->clock_in->timestamp)/60/60) }}:{{ gmdate("i", ($timepunch->clock_out->timestamp - $timepunch->clock_in->timestamp)) }}</td>
+                    @if(!empty($timepunch->clock_out))
+                    <td scope="col">{{ $timepunch->clock_out->toDayDateTimeString() }}</td>
+                    @else
+                    <td scope="col">{{ Carbon\Carbon::now()->toDayDateTimeString() }}</td>
+                    @endif
+                    <td>Hours</td>
+                    @if(!empty($timepunch->clock_out))
+                    <td>{{ floor(($timepunch->clock_out->timestamp - $timepunch->clock_in->timestamp)/60/60) }}:{{ gmdate("i", ($timepunch->clock_out->timestamp - $timepunch->clock_in->timestamp)) }}</td>
+                    @else
+                    <td>{{ floor((Carbon\Carbon::now()->timestamp - $timepunch->clock_in->timestamp)/60/60) }}:{{ gmdate("i", (Carbon\Carbon::now()->timestamp - $timepunch->clock_in->timestamp)) }}</td>
+                    @endif
               		</tr>
 
               		@if($timepunch->edited)

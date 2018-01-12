@@ -41597,12 +41597,15 @@ if (false) {
 
 var accordions = document.getElementsByClassName('has-submenu');
 var adminSlideButton = document.getElementById('admin-slideout-button');
+var clockSubmit = document.getElementById('clock-submit');
 
 function setSubmenuStyles(submenu, maxHeight, margins) {
   submenu.style.maxHeight = maxHeight;
   submenu.style.marginTop = margins;
   submenu.style.marginBottom = margins;
 }
+
+clockSubmit.onclick = "this.disabled=true;";
 
 adminSlideButton.onclick = function () {
   this.classList.toggle('is-active');
