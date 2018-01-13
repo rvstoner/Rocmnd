@@ -86,9 +86,6 @@ class User extends Authenticatable
 
     public function IPallowed()
     {       
-        // if(auth()->user()->hasRole('serveradministrator')){
-        //     return true;
-        // }
         $ips = $this->cachedIps();
         $userIp = request()->getClientIp();
 
@@ -99,13 +96,6 @@ class User extends Authenticatable
         }
         return false;
 
-        // if($ips->contains(function ($value, $key) use ($userIp) {
-        //     dump($value);
-        //     return $value = $userIp;
-        //     })){
-        //         return true;
-        // }
-        // return false;
     }
     /**
      * Tries to return all the cached Ip's.
@@ -162,12 +152,17 @@ class User extends Authenticatable
     }
 
     public function isClockedIn()
+    { 
+        $cacheKey = 'clockin_' . $this->id;
+
+        return Cache::remember($cacheKey, 60, function () {
+            return $this->hasMany('App\Models\Payroll\TimePunch')->where('clock_out', NULL)->count();
+        });
+    }
+
+    public function flushClockinCache()
     {
-        if (!is_null($this->latestTimePunch) && $this->latestTimePunch->clock_out === NULL)
-        {
-            return true;
-        }
-            return false;
+        Cache::forget('clockin_' . $this->id);
     }
 
     public function latestTimePunch()

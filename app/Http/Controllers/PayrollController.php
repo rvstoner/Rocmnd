@@ -17,22 +17,27 @@ class PayrollController extends Controller
     
     public function clockin(Request $request)
     {
-    	$clockin = new TimePunch;
-    	$clockin->clock_in = $clockin->roundTime(Carbon::now());
-    	$clockin->reason = $request->reason;
-        $clockin->shift = $clockin->setShift(Carbon::now());
-        $clockin->user_id = auth()->user()->id;
-        $clockin->shift_date = $clockin->getStartOfDay(Carbon::now());
-        $clockin->save();
+        if(!auth()->user()->isClockedIn()){
+            $clockin = new TimePunch;
+            $clockin->clock_in = $clockin->roundTime(Carbon::now());
+            $clockin->reason = $request->reason;
+            $clockin->shift = $clockin->setShift(Carbon::now());
+            $clockin->user_id = auth()->user()->id;
+            $clockin->shift_date = $clockin->getStartOfDay(Carbon::now());
+            $clockin->save();
+        }
+    	
 
         return back();
     }
 
     public function clockout()
     {
-    	$clockout = auth()->user()->latestTimePunch;
-        $clockout->clockout(Carbon::now());
-
+        if(auth()->user()->isClockedIn()){
+            $clockout = auth()->user()->latestTimePunch;
+            $clockout->clockout(Carbon::now());
+            auth()->user()->flushClockinCache();
+        }
         return back();
     }
 

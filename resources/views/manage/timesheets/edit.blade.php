@@ -9,7 +9,7 @@
 	<div class="columns">
 		<div class="column is-narrow">
 			<div class="m-t-85">	
-				<strong>Clock In</strong> {{ $timepunch->clock_in->format('m/d/Y') }}
+				<strong>Clock In</strong>
 			</div>	            
 		</div>
 		<div class="column m-t-39">
@@ -26,7 +26,7 @@
 		</div>
 		<div class="column is-narrow">
 			<div class="m-t-85">
-				{{ $timepunch->clock_in->format('h:i A') }}
+				
 			</div>
 		</div>
 		<div class="column">
@@ -52,7 +52,7 @@
 	<div class="columns">
 		<div class="column is-narrow">
 			<div class="m-t-45">	
-				<strong>Clock Out</strong> {{ $timepunch->clock_out->format('m/d/Y') }}
+				<strong>Clock Out</strong>
 			</div>	            
 		</div>
 		<div class="column">
@@ -69,7 +69,7 @@
 		</div>
 		<div class="column is-narrow">
 			<div class="m-t-45">
-				{{ $timepunch->clock_out->format('h:i A') }}
+				
 			</div>
 		</div>
 		<div class="column">
@@ -116,9 +116,9 @@
       data: {
         formatAmPm: false,
         clockinDate: new Date("{!! $timepunch->clock_in->toDateTimeString() !!}"),
-        clockoutDate: new Date("{!! $timepunch->clock_out->toDateTimeString() !!}"),
+        clockoutDate: new Date("{!! empty($timepunch->clock_out)? Carbon\Carbon::now()->toDateTimeString(): $timepunch->clock_out->toDateTimeString() !!}"),
         clockinTime: new Date("{!! $timepunch->clock_in->toDateTimeString() !!}"),
-        clockoutTime: new Date("{!! $timepunch->clock_out->toDateTimeString() !!}")
+        clockoutTime: new Date("{!! empty($timepunch->clock_out)? Carbon\Carbon::now()->toDateTimeString(): $timepunch->clock_out->toDateTimeString() !!}")
       },
      computed: {
         format() {
