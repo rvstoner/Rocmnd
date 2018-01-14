@@ -5,6 +5,7 @@ namespace App\Models\Payroll;
 use App\User;
 use Carbon\Carbon;
 use App\Models\Payroll\Payroll;
+use Illuminate\Support\Facades\Cache;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -120,6 +121,8 @@ class TimePunch extends Model
         if($shiftEnd >= $time){
             $this->clock_out = $time;
             $this->save();
+            $cacheKey = 'clockin_' . auth()->user()->id;
+            Cache::put($cacheKey, false, 60);
         }else{
 
             $this->clock_out = $shiftEnd;

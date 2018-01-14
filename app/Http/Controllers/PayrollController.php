@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Payroll\{TimePunch, Team, TimePunchEdits, Period};
 
 class PayrollController extends Controller
@@ -17,7 +18,7 @@ class PayrollController extends Controller
     
     public function clockin(Request $request)
     {
-        if(!auth()->user()->isClockedIn()){
+        if(!auth()->user()->getClockinStatus()){
             $clockin = new TimePunch;
             $clockin->clock_in = $clockin->roundTime(Carbon::now());
             $clockin->reason = $request->reason;
@@ -25,6 +26,8 @@ class PayrollController extends Controller
             $clockin->user_id = auth()->user()->id;
             $clockin->shift_date = $clockin->getStartOfDay(Carbon::now());
             $clockin->save();
+            $cacheKey = 'clockin_' . auth()->user()->id;
+            Cache::put($cacheKey, true, 60);
         }
     	
 
@@ -33,10 +36,9 @@ class PayrollController extends Controller
 
     public function clockout()
     {
-        if(auth()->user()->isClockedIn()){
-            $clockout = auth()->user()->latestTimePunch;
-            $clockout->clockout(Carbon::now());
-            auth()->user()->flushClockinCache();
+        if(auth()->user()->getClockinStatus()){
+            $timePunch = auth()->user()->latestTimePunch();
+            $timePunch->clockout(Carbon::now());
         }
         return back();
     }

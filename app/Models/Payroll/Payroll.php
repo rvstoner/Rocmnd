@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payroll extends Model
 {
+    public function __construct()
+    {
+        Carbon::setWeekStartsAt(Carbon::SUNDAY);    
+        Carbon::setWeekEndsAt(Carbon::SATURDAY); 
+    }
     
     public function calulateHours($user, $type, $date, $enddate)
     {
@@ -35,5 +40,12 @@ class Payroll extends Model
         $period->end = $enddate;
         $period->timepunches = $user->timepunches->where('shift_date', '>=', $period->start)->where('shift_date', '<=', $period->end);
         $period->calulate();
+    }
+
+    public function lastWeek($user, $date, $enddate){
+        $week = new Week();
+        $week->timepunches = $user->timepunches;
+        $week->start = $date->copy()->startOfWeek()->startOfDay();
+        $week->calulate($date);
     }
 }

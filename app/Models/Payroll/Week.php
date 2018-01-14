@@ -15,7 +15,7 @@ class Week extends Model
     }
 
     public function calulate($date)
-    {    	
+    {    	 
     	$this->end = $this->start->copy()->endOfWeek();  
     	$this->breakIntoDays($date);
         $this->checkForOverTime();

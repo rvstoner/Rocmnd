@@ -154,10 +154,18 @@ class User extends Authenticatable
     public function isClockedIn()
     { 
         $cacheKey = 'clockin_' . $this->id;
-
+        $this->flushClockinCache();
         return Cache::remember($cacheKey, 60, function () {
-            return $this->hasMany('App\Models\Payroll\TimePunch')->where('clock_out', NULL)->count();
+            return $this->getClockinStatus();
         });
+    }
+
+    public function getClockinStatus()
+    {
+        if($this->hasMany('App\Models\Payroll\TimePunch')->whereNull('clock_out')->count()){
+            return true;
+        }
+        return false;
     }
 
     public function flushClockinCache()
@@ -167,7 +175,7 @@ class User extends Authenticatable
 
     public function latestTimePunch()
     {
-        return $this->hasOne('App\Models\Payroll\TimePunch')->latest('shift_date');
+        return $this->hasMany('App\Models\Payroll\TimePunch')->whereNull('clock_out')->first();
     }
 
     public function getHours($type = "lastPeriod", $date = Null, $endDate = NULL)

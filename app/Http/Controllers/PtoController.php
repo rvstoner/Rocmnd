@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Role;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -59,5 +60,21 @@ class PtoController extends Controller
     	$user->save();
     	
        return redirect()->route('manage.dashboard');		
+    }
+
+    Public function otToPto()
+    {
+        $roles = Role::whereIn('name', ['director', 'assistantdirector', 'administrator' , 'kitchensupervisor'])->with(['users' => function ($qurey){
+                $qurey->where('team_id', auth()->user()->team_id)->with(['timepunches' => function($qurey){
+                    $qurey->where('shift_date', '>=', Carbon::now()->subWeek()->previous(Carbon::SUNDAY))
+                        ->where('shift_date', '<', Carbon::now()->previous(Carbon::SUNDAY));
+                }]);
+            }])->get();
+        foreach($roles as $role){
+            foreach($role->users as $user){
+               $user->getHours('lastWeek', Carbon::now()->subWeek());
+            }
+            dd($role);
+        }
     }
 }

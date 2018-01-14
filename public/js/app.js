@@ -41605,8 +41605,6 @@ function setSubmenuStyles(submenu, maxHeight, margins) {
   submenu.style.marginBottom = margins;
 }
 
-clockSubmit.onclick = "this.disabled=true;";
-
 adminSlideButton.onclick = function () {
   this.classList.toggle('is-active');
   document.getElementById('admin-side-menu').classList.toggle('is-active');

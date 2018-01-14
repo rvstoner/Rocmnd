@@ -5,13 +5,13 @@
         <img src="{{asset('images/rocmnd.png')}}" alt="Rocmnd Logo">
       </a>
 
-      @if (Request::segment(1) == "manage")
+      {{-- @if(Request::segment(1) == "manage") --}}
         <a class="navbar-item is-hidden-desktop" id="admin-slideout-button">
           <span class="icon">
             <i class="fa fa-arrow-circle-right"></i>
           </span>
         </a>
-      @endif
+      {{-- @endif --}}
 
       <button class="button navbar-burger" data-target="navMenu">
        <span></span>
@@ -73,11 +73,11 @@
                 </span>Profile
               </a>
 
-              {{-- <a href="#" class="navbar-item">
+              <a href="#" class="navbar-item">
                 <span class="icon">
                   <i class="fa fa-fw fa-bell m-r-5"></i>
                 </span>Notifications
-              </a> --}}
+              </a>
               @auth
                 @role('serveradministrator|payrollmanager|director|assistantdirector|administrator')
                   <a href="{{route('manage.dashboard')}}" class="navbar-item">
