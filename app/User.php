@@ -154,7 +154,6 @@ class User extends Authenticatable
     public function isClockedIn()
     { 
         $cacheKey = 'clockin_' . $this->id;
-        $this->flushClockinCache();
         return Cache::remember($cacheKey, 60, function () {
             return $this->getClockinStatus();
         });

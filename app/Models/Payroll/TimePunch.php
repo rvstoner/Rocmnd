@@ -114,30 +114,59 @@ class TimePunch extends Model
         return $shift->clockin;
     }
 
-    public function clockout($time)
+    public function clockout($shifts = NULL, $timepunch = NULL)
     {
-        $time = $this->roundTime($time);
-        $shiftEnd = $this->getSEndOfShift($this->clock_in);
-        if($shiftEnd >= $time){
-            $this->clock_out = $time;
-            $this->save();
-            $cacheKey = 'clockin_' . auth()->user()->id;
-            Cache::put($cacheKey, false, 60);
-        }else{
-
-            $this->clock_out = $shiftEnd;
-            $this->save();
-            $oldTimePunch = $this;
-            $timePunch = new TimePunch();
-
-            $timePunch->clock_in = $shiftEnd;
-            $timePunch->reason = $oldTimePunch->reason;
-            $timePunch->shift = $timePunch->setShift($shiftEnd);
-            $timePunch->user_id = auth()->user()->id;
-            $timePunch->shift_date = $timePunch->getStartOfDay($shiftEnd);
-            $timePunch->save();
-            $timePunch->clockout($time);
+        $time = $this->roundTime(Carbon::now());
+        if(empty($shifts)){
+            $shifts = $this->getShifts();
+        } 
+        if(empty($timepunch)){
+            $timepunch = $this;
+        }        
+        $shift = $shifts->where('shift', $timepunch->shift)->first();
+        $shiftTimes = $this->setShiftTimes($shift);
+        if(!$time->between($shiftTimes->clock_in_time, $shiftTimes->clock_out_time)){
+            $timepunch->clock_out = $shiftTimes->clock_out_time;
+            $timepunch->save();
+            $timepunch->nextShift($shifts, $timepunch);
         }
+        $timepunch->clock_out = $time;
+        $timepunch->save();
+        $cacheKey = 'clockin_' . auth()->user()->id;
+        Cache::put($cacheKey, false, 60);
+    }
+
+    public function setShiftTimes($shift)
+    {
+        $shift->clock_in_time = $this->shift_date->copy()->hour($shift->shift_start)->minute(00);
+        if($shift->shift_start > $shift->shift_end){
+            $shift->clock_out_time = $this->shift_date->copy()->hour($shift->shift_end)->minute(00)->addDay();
+        }else{
+            $shift->clock_out_time = $this->shift_date->copy()->hour($shift->shift_end)->minute(00);
+        }
+
+        return $shift;
+    }
+
+    public function nextShift($shifts, $timepunch)
+    {
+        $shift = $timepunch->shift;
+        if($shifts->count() === $shift){
+            $shift = 0;
+        }
+        $shift ++;
+        $oldTimePunch = $timepunch;
+        $timepunch = new TimePunch();
+
+        $timepunch->clock_in = $oldTimePunch->clock_out;
+        $timepunch->reason = $oldTimePunch->reason;
+        $timepunch->shift = $shift;
+        $timepunch->user_id = $oldTimePunch->user_id;
+        $timepunch->shift_date = $timepunch->clock_in->startOfDay();
+        $timepunch->save();
+        $this->clockout($shifts, $timepunch);
+
+
     }
 
     public function calulate()

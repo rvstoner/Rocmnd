@@ -38,7 +38,7 @@ class PayrollController extends Controller
     {
         if(auth()->user()->getClockinStatus()){
             $timePunch = auth()->user()->latestTimePunch();
-            $timePunch->clockout(Carbon::now());
+            $timePunch->clockout();
         }
         return back();
     }
