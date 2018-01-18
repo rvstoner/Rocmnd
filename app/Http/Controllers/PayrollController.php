@@ -37,7 +37,7 @@ class PayrollController extends Controller
     public function clockout()
     {
         if(auth()->user()->getClockinStatus()){
-            $timePunch = auth()->user()->latestTimePunch();
+            $timePunch = auth()->user()->getLastTimePunch();
             $timePunch->clockout();
         }
         return back();

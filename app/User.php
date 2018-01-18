@@ -172,9 +172,9 @@ class User extends Authenticatable
         Cache::forget('clockin_' . $this->id);
     }
 
-    public function latestTimePunch()
+    public function getLastTimePunch()
     {
-        return $this->hasMany('App\Models\Payroll\TimePunch')->whereNull('clock_out')->first();
+        return $this->hasMany('App\Models\Payroll\TimePunch')->whereNull('clock_out')->latest('clock_in')->first();
     }
 
     public function getHours($type = "lastPeriod", $date = Null, $endDate = NULL)

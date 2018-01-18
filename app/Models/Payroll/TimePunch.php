@@ -11,13 +11,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class TimePunch extends Model
 {
+    private $timePunchesToCheck;
 	/**
      * Change Carbons start and end of the week.
      */
     public function __construct()
     {
         Carbon::setWeekStartsAt(Carbon::SUNDAY);    
-        Carbon::setWeekEndsAt(Carbon::SATURDAY); 
+        Carbon::setWeekEndsAt(Carbon::SATURDAY);
+        $this->timePunchesToCheck = collect([]); 
     }
 
     /**
@@ -124,25 +126,28 @@ class TimePunch extends Model
             $timepunch = $this;
         }        
         $shift = $shifts->where('shift', $timepunch->shift)->first();
-        $shiftTimes = $this->setShiftTimes($shift);
+        $shiftTimes = $this->setShiftTimes($shift, $timepunch);
         if(!$time->between($shiftTimes->clock_in_time, $shiftTimes->clock_out_time)){
+
             $timepunch->clock_out = $shiftTimes->clock_out_time;
             $timepunch->save();
+
             $timepunch->nextShift($shifts, $timepunch);
         }
         $timepunch->clock_out = $time;
         $timepunch->save();
         $cacheKey = 'clockin_' . auth()->user()->id;
         Cache::put($cacheKey, false, 60);
+
     }
 
-    public function setShiftTimes($shift)
+    public function setShiftTimes($shift, $timePunch)
     {
-        $shift->clock_in_time = $this->shift_date->copy()->hour($shift->shift_start)->minute(00);
+        $shift->clock_in_time = $timePunch->shift_date->copy()->hour($shift->shift_start)->minute(00);
         if($shift->shift_start > $shift->shift_end){
-            $shift->clock_out_time = $this->shift_date->copy()->hour($shift->shift_end)->minute(00)->addDay();
+            $shift->clock_out_time = $timePunch->shift_date->copy()->hour($shift->shift_end)->minute(00)->addDay();
         }else{
-            $shift->clock_out_time = $this->shift_date->copy()->hour($shift->shift_end)->minute(00);
+            $shift->clock_out_time = $timePunch->shift_date->copy()->hour($shift->shift_end)->minute(00);
         }
 
         return $shift;
