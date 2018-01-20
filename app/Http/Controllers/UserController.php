@@ -137,7 +137,6 @@ class UserController extends Controller
       $user->home_phone_area = $request->home_phone_area;
       $user->home_phone_prefix = $request->home_phone_prefix;
       $user->home_phone_number = $request->home_phone_number;
-      $user->email = $request->email;
       if ($request->password_options == 'auto') {
         $length = 10;
         $keyspace = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
@@ -147,10 +146,10 @@ class UserController extends Controller
             $str .= $keyspace[random_int(0, $max)];
         }
         $user->password = Hash::make($str);
-        $tempPassword = TempPassword::updateOrCreate(
-            ['user_id' => $user->id],
-            ['password' => $str]
-        );
+        // $tempPassword = TempPassword::updateOrCreate(
+        //     ['user_id' => $user->id],
+        //     ['password' => $str]
+        // );
         // $user->tempPassword()->updateOrCreate($tempPassword);
       } elseif ($request->password_options == 'manual') {
         $user->password = Hash::make($request->password);
