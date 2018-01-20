@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class TimePunch extends Model
 {
     private $timePunchesToCheck;
+    public $shifts;
 	/**
      * Change Carbons start and end of the week.
      */
@@ -19,7 +20,8 @@ class TimePunch extends Model
     {
         Carbon::setWeekStartsAt(Carbon::SUNDAY);    
         Carbon::setWeekEndsAt(Carbon::SATURDAY);
-        $this->timePunchesToCheck = collect([]); 
+        $this->timePunchesToCheck = collect([]);
+        $this->shifts = $this->getShifts();
     }
 
     /**
@@ -78,11 +80,18 @@ class TimePunch extends Model
 
     public function getShift($time)
     {
-        $shifts = $this->getShifts();
-        $shifts = $shifts->each(function ($item, $key) use ($time) {
+        $this->getShifts();
+        $shifts = $this->shifts->each(function ($item, $key) use ($time) {
             $item->getTimes($time);
         });
         $shift = $shifts->where('clockin', '<=', $time)->where('clockout', '>', $time)->first();
+        return $shift;
+    } 
+
+    private function getThisShift($shift)
+    {      
+        $shifts = $this->getShifts(); 
+        $shift = $shifts->where('shift', $shift)->first();
         return $shift;
     }
 
@@ -116,61 +125,63 @@ class TimePunch extends Model
         return $shift->clockin;
     }
 
-    public function clockout($shifts = NULL, $timepunch = NULL)
+    public function clockoutTest()
     {
-        $time = $this->roundTime(Carbon::now());
-        if(empty($shifts)){
-            $shifts = $this->getShifts();
-        } 
-        if(empty($timepunch)){
-            $timepunch = $this;
-        }        
-        $shift = $shifts->where('shift', $timepunch->shift)->first();
-        $shiftTimes = $this->setShiftTimes($shift, $timepunch);
-        if(!$time->between($shiftTimes->clock_in_time, $shiftTimes->clock_out_time)){
+        $this->setUpClockOut($this);
+    }
 
-            $timepunch->clock_out = $shiftTimes->clock_out_time;
-            $timepunch->save();
-
-            $timepunch->nextShift($shifts, $timepunch);
+    private function setUpClockOut($timepunch)
+    {
+        $shift = $this->setShiftTimes($timepunch);
+        if($this->checkIfSameShift($shift)){
+            $this->processClockOut($timepunch, $this->roundTime(Carbon::now()));
+        }else{
+            $this->nextShift($timepunch, $shift);
         }
+                  
+    }
+
+    private function setShiftTimes($timepunch)
+    {
+       $shift = $this->getThisShift($timepunch->shift);
+       $shift->start_time = $timepunch->shift_date->copy()->hour($shift->shift_start);
+       if($shift->shift_start > $shift->shift_end){
+           $shift->end_time = $timepunch->shift_date->copy()->hour($shift->shift_end)->addDay();
+       }else{
+           $shift->end_time = $timepunch->shift_date->copy()->hour($shift->shift_end);
+       }
+       return $shift;
+    }
+
+    private function checkIfSameShift($shift)
+    {
+        return Carbon::now()->lte($shift->end_time);
+    }
+
+    private function processClockOut($timepunch, $time)
+    {
         $timepunch->clock_out = $time;
         $timepunch->save();
         $cacheKey = 'clockin_' . auth()->user()->id;
         Cache::put($cacheKey, false, 60);
-
     }
 
-    public function setShiftTimes($shift, $timePunch)
+     public function nextShift($timepunch, $shift)
     {
-        $shift->clock_in_time = $timePunch->shift_date->copy()->hour($shift->shift_start)->minute(00);
-        if($shift->shift_start > $shift->shift_end){
-            $shift->clock_out_time = $timePunch->shift_date->copy()->hour($shift->shift_end)->minute(00)->addDay();
-        }else{
-            $shift->clock_out_time = $timePunch->shift_date->copy()->hour($shift->shift_end)->minute(00);
+        $shiftNumber = $timepunch->shift;
+        if($this->shifts->count() === $shiftNumber){
+            $shiftNumber = 0;
         }
-
-        return $shift;
-    }
-
-    public function nextShift($shifts, $timepunch)
-    {
-        $shift = $timepunch->shift;
-        if($shifts->count() === $shift){
-            $shift = 0;
-        }
-        $shift ++;
-        $oldTimePunch = $timepunch;
-        $timepunch = new TimePunch();
-
-        $timepunch->clock_in = $oldTimePunch->clock_out;
-        $timepunch->reason = $oldTimePunch->reason;
-        $timepunch->shift = $shift;
-        $timepunch->user_id = $oldTimePunch->user_id;
-        $timepunch->shift_date = $timepunch->clock_in->startOfDay();
-        $timepunch->save();
-        $this->clockout($shifts, $timepunch);
-
+        $shiftNumber ++;
+        $this->processClockOut($timepunch, $shift->end_time);
+        $newTimepunch = new TimePunch();
+        $newTimepunch->clock_in = $timepunch->clock_out;
+        $newTimepunch->reason = $timepunch->reason;
+        $newTimepunch->shift = $shiftNumber;
+        $newTimepunch->user_id = $timepunch->user_id;
+        $newTimepunch->shift_date = $timepunch->clock_out->copy()->startOfDay();
+        $newTimepunch->save();
+        $this->setUpClockOut($newTimepunch);
 
     }
 

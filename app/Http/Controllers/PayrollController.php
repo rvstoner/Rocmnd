@@ -26,10 +26,9 @@ class PayrollController extends Controller
             $clockin->user_id = auth()->user()->id;
             $clockin->shift_date = $clockin->getStartOfDay(Carbon::now());
             $clockin->save();
-            $cacheKey = 'clockin_' . auth()->user()->id;
-            Cache::put($cacheKey, true, 60);
         }
-    	
+        $cacheKey = 'clockin_' . auth()->user()->id;
+        Cache::put($cacheKey, true, 60);    	
 
         return back();
     }
@@ -38,7 +37,7 @@ class PayrollController extends Controller
     {
         if(auth()->user()->getClockinStatus()){
             $timePunch = auth()->user()->getLastTimePunch();
-            $timePunch->clockout();
+            $timePunch->clockoutTest();
         }
         return back();
     }
