@@ -53,7 +53,7 @@
                   <h2 class="title">Permissions:</h2>
                   <div class="field is-grouped is-grouped-multiline">
                     @foreach ($permissions as $permission)
-                    <p class="control">
+                    <p class="control ">
                       @permission(strtolower($permission->name))
                       <b-checkbox v-model="permissionsSelected" :native-value="{{$permission->id}}">{{$permission->display_name}} <em>({{$permission->description}})</em> {{$permission->name}}</b-checkbox>
                       @endpermission

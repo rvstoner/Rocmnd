@@ -12,7 +12,9 @@ window.Slug = require('slug');
 Slug.defaults.mode = 'rfc3986';
 
 import Buefy from 'buefy'
-Vue.use(Buefy);
+Vue.use(Buefy, {
+defaultIconPack: 'fa'
+});
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

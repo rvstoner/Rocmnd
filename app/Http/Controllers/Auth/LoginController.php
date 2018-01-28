@@ -36,6 +36,7 @@ class LoginController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('guest')->except('logout');
+        $this->middleware('auth')->only('logout');
         $this->request = $request;
     }
 
@@ -46,4 +47,5 @@ class LoginController extends Controller
 
         return $field;
     }
+
 }

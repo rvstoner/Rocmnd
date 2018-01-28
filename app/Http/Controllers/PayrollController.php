@@ -22,7 +22,7 @@ class PayrollController extends Controller
             $clockin = new TimePunch;
             $clockin->clock_in = $clockin->roundTime(Carbon::now());
             $clockin->reason = $request->reason;
-            $clockin->shift = $clockin->setShift(Carbon::now());
+            $clockin->shift = $clockin->setShift($clockin->clock_in);
             $clockin->user_id = auth()->user()->id;
             $clockin->shift_date = $clockin->getStartOfDay(Carbon::now());
             $clockin->save();
@@ -37,9 +37,17 @@ class PayrollController extends Controller
     {
         if(auth()->user()->getClockinStatus()){
             $timePunch = auth()->user()->getLastTimePunch();
-            $timePunch->clockoutTest();
+            $timePunch->clockout();
         }
         return back();
+        // return Redirect::back()->with('error_code', 5);
+        // @if(!empty(Session::get('error_code')) && Session::get('error_code') == 5)
+        // <script>
+        // $(function() {
+        //   $('#myModal').modal('show');
+        // });
+        // </script>
+        // @endif
     }
 
     public function index(Request $request)
@@ -207,7 +215,8 @@ class PayrollController extends Controller
         $period->getLastPeriod();
         $startOfPeriod = $period->start->startOfWeek();
 
-        $endOfPeriod = $period->end;
+        $endOfPeriod = Carbon::now();
+        // $endOfPeriod = $period->end;
 
         $user = User::with(['timepunches' => function ($qurey) use ($startOfPeriod, $endOfPeriod){
             $qurey->whereBetween('shift_date', [$startOfPeriod, $endOfPeriod])->
@@ -215,8 +224,18 @@ class PayrollController extends Controller
         }])->findOrFail($id);
 
         $user->getHours();
-
         return view('manage.timesheets.user', compact('user'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 
 }

@@ -80,7 +80,7 @@ class TimePunch extends Model
 
     public function getShift($time)
     {
-        $this->getShifts();
+        // $this->getShifts();
         $shifts = $this->shifts->each(function ($item, $key) use ($time) {
             $item->getTimes($time);
         });
@@ -125,7 +125,7 @@ class TimePunch extends Model
         return $shift->clockin;
     }
 
-    public function clockoutTest()
+    public function clockout()
     {
         $this->setUpClockOut($this);
     }
@@ -155,7 +155,8 @@ class TimePunch extends Model
 
     private function checkIfSameShift($shift)
     {
-        return Carbon::now()->lte($shift->end_time);
+        $Start = $this->roundTime(Carbon::now());
+        return $start->lte($shift->end_time);
     }
 
     private function processClockOut($timepunch, $time)

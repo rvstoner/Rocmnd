@@ -1047,7 +1047,9 @@ window.Slug = __webpack_require__(37);
 Slug.defaults.mode = 'rfc3986';
 
 
-Vue.use(__WEBPACK_IMPORTED_MODULE_0_buefy___default.a);
+Vue.use(__WEBPACK_IMPORTED_MODULE_0_buefy___default.a, {
+  defaultIconPack: 'fa'
+});
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -41604,6 +41606,8 @@ function setSubmenuStyles(submenu, maxHeight, margins) {
   submenu.style.marginTop = margins;
   submenu.style.marginBottom = margins;
 }
+
+clockSubmit.onclick = "this.disabled=true;";
 
 adminSlideButton.onclick = function () {
   this.classList.toggle('is-active');

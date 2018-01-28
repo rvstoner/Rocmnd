@@ -94,8 +94,11 @@ class UserController extends Controller
     public function show($id)
     {
       $user = User::where('id', $id)->with('roles')->with(['timepunches' => function ($qurey) {
-        $qurey->orderBy('shift_date', 'desc')->take(10);
+        $qurey->orderBy('shift_date', 'desc')->take(100);
       }])->first();
+      $user->timepunches = $user->timepunches->sortBy('clock_in');
+      $user->getHours();
+      // dd($user->payroll->period->weeks);
       return view("manage.users.show")->withUser($user);
     }
     /**
@@ -136,7 +139,10 @@ class UserController extends Controller
       $user->last_name = $request->last_name;
       $user->home_phone_area = $request->home_phone_area;
       $user->home_phone_prefix = $request->home_phone_prefix;
-      $user->home_phone_number = $request->home_phone_number;
+      $user->home_phone_number = $request->home_phone_number; 
+      $user->secondary_phone_area = $request->secondary_phone_area;
+      $user->secondary_phone_prefix = $request->secondary_phone_prefix;
+      $user->secondary_phone_number = $request->secondary_phone_number;
       if ($request->password_options == 'auto') {
         $length = 10;
         $keyspace = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';

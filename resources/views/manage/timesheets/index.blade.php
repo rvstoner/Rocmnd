@@ -41,8 +41,8 @@
 					@endif
 				@endif
 				@endforeach
-				<td>{{ floor($user->payroll->period->hours/60/60) }}:{{ gmdate("i", $user->total_hours) }}</td>
-				<td>{{ floor($user->payroll->period->overtime/60/60) }}:{{ gmdate("i", $user->total_overtime) }}</td>
+				<td>{{ floor($user->payroll->period->hours/60/60) }}:{{ gmdate("i", $user->payroll->period->hours) }}</td>
+				<td>{{ floor($user->payroll->period->overtime/60/60) }}:{{ gmdate("i", $user->payroll->period->overtime) }}</td>
 			</tr>
 		@endforeach
 	@endforeach
