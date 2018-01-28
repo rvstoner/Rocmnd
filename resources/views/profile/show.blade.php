@@ -13,75 +13,7 @@
     </div>
     <hr class="m-t-0">
 
-  <div class="columns">
-    <div class="column">
-      <template>
-        <section>
-
-          <b-collapse :open="false">
-            <button class="button is-primary" slot="trigger">Time punches</button>
-            <div class="notification">
-              <div class="content">
-
-              	<table class="table is-bordered is-striped is-narrow is-fullwidth">
-              		@forelse($user->payroll->period->weeks as $week)
-              		<tr>
-              			<th scope="col" colspan='2'>{{$week->start->format('m/d/Y')}} to {{ $week->end->format('m/d/Y') }}</th>
-              			<th>Hours {{ floor($week->hours/60/60) }}:{{ gmdate("i", $week->hours) }}</th>
-              			<th>Roll over {{ floor($week->rollover/60/60) }}:{{ gmdate("i", $week->rollover) }}</th>
-              			<th>OT {{ floor($week->overtime/60/60) }}:{{ gmdate("i", $week->overtime) }}</th>
-              			<td></td>
-              		</tr>
-              		@if(array_has($week, 'timepunches'))
-              		@forelse($week->timepunches as $timepunch)
-              		<tr>
-                    
-              			<th scope="col" colspan='2'>Reason: 
-              				@if($timepunch->reason)
-              				{{ $timepunch->reason }}
-              				@endif
-              			</th>                    
-              			<td scope="col">{{ $timepunch->clock_in->toDayDateTimeString() }}</td>
-                    @if(!empty($timepunch->clock_out))
-                    <td scope="col">{{ $timepunch->clock_out->toDayDateTimeString() }}</td>
-                    @else
-                    <td scope="col">{{ Carbon\Carbon::now()->toDayDateTimeString() }}</td>
-                    @endif
-                    <td>Hours</td>
-                    @if(!empty($timepunch->clock_out))
-                    <td>{{ floor(($timepunch->clock_out->timestamp - $timepunch->clock_in->timestamp)/60/60) }}:{{ gmdate("i", ($timepunch->clock_out->timestamp - $timepunch->clock_in->timestamp)) }}</td>
-                    @else
-                    <td>{{ floor((Carbon\Carbon::now()->timestamp - $timepunch->clock_in->timestamp)/60/60) }}:{{ gmdate("i", (Carbon\Carbon::now()->timestamp - $timepunch->clock_in->timestamp)) }}</td>
-                    @endif
-              		</tr>
-
-              		@if($timepunch->edited)
-              		<tr>
-              			<th scope="col" colspan='5'>Edited by {{ $timepunchedit->user->getNameOrUsername() }}</th>
-              		</tr>
-              		<tr>
-              			<th scope="col" colspan='2'>Reason: @if($timepunchedit->reason){{ $timepunchedit->reason }}@endif</th>
-              			<th scope="col">Original</th>
-              			<td scope="col">{{ $timepunchedit->clock_in }}</td>
-              			<td scope="col">{{ $timepunchedit->clock_out }}</td>
-              			
-              		</tr>					
-              		@endif
-              		@empty
-              		@endforelse
-              		@endif
-              		@empty
-              		@endforelse
-              	</table>
-
-              </div>
-            </div>
-          </b-collapse>
-
-        </section>
-      </template>
-    </div>
-  </div>
+    @include('_includes.timesheets.usertimesheet')
 
     <div class="columns">
       <div class="column">
@@ -169,13 +101,3 @@
   </div>
 @endsection
 
-@section('scripts')
-  <script>
-    var app = new Vue({
-      el: '#app',
-      data: {
-        isOpen: true
-      }
-    });
-  </script>
-@endsection

@@ -1,10 +1,5 @@
 
-<section class="section">
-  <div class="container">
-    <h1 class="title">{{ $user->getNameOrUsername() }}</h1>
-  </div>
-</section>
-<section class="section">
+  <section class="section">
   <div class="columns">
     <div class="column">
       <template>
@@ -36,13 +31,13 @@
 
                 <b-table-column label="Roll over">
                   <template v-if="props.row.rollover">
-                    @{{ props.row.rollover/60/60 }}
+                    @{{ Math.floor(props.row.rollover/60/60) }}:@{{ Math.floor(((props.row.rollover % 86400) % 3600) / 60) }}
                   </template>
                 </b-table-column>
 
                 <b-table-column label="OT">
                   <template v-if="props.row.overtime">
-                    @{{ props.row.overtime/60/60 }}
+                    @{{ Math.floor(props.row.overtime/60/60) }}:@{{ Math.floor(((props.row.overtime % 86400) % 3600) / 60) }}
                   </template>
                 </b-table-column>
               </template>
