@@ -97,6 +97,7 @@ class UserController extends Controller
         $qurey->orderBy('shift_date', 'desc')->take(100);
       }])->first();
       $user->timepunches = $user->timepunches->sortBy('clock_in');
+      dd($user->timepunches);
       $user->getHours();
       // dd($user->payroll->period->weeks);
       return view("manage.users.show")->withUser($user);
