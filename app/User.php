@@ -89,12 +89,13 @@ class User extends Authenticatable
         if($this->hasRole('serveradministrator')){
             return true;
         }else{
-        $ips = $this->cachedIps();
-        $userIp = request()->getClientIp();
+            $ips = $this->cachedIps();
+            $userIp = request()->getClientIp();
 
-        foreach($ips as $ip){
-            if($ip->address === $userIp){
-                return true;
+            foreach($ips as $ip){
+                if($ip->address === $userIp){
+                    return true;
+                }
             }
         }
         return false;

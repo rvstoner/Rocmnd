@@ -155,7 +155,7 @@ class TimePunch extends Model
 
     private function checkIfSameShift($shift)
     {
-        $Start = $this->roundTime(Carbon::now());
+        $start = $this->roundTime(Carbon::now());
         return $start->lte($shift->end_time);
     }
 
