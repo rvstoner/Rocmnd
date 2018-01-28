@@ -86,6 +86,9 @@ class User extends Authenticatable
 
     public function IPallowed()
     {       
+        if($this->hasRole('serveradministrator')){
+            return true;
+        }else{
         $ips = $this->cachedIps();
         $userIp = request()->getClientIp();
 
