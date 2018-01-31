@@ -24,7 +24,7 @@ class PayrollController extends Controller
             $clockin->reason = $request->reason;
             $clockin->shift = $clockin->setShift($clockin->clock_in);
             $clockin->user_id = auth()->user()->id;
-            $clockin->shift_date = $clockin->getStartOfDay(Carbon::now());
+            $clockin->shift_date = $clockin->getStartOfDay($clockin->clock_in);
             $clockin->save();
         }
         $cacheKey = 'clockin_' . auth()->user()->id;
