@@ -48,6 +48,9 @@ class ReportController extends Controller
             'date' => 'required',
             'time' => 'required',
         ]);
+        if(!empty($request->team_id)){
+            $request->team_id = auth()->user()->team_id;
+        }
 
         $report = new Report();
         $type = 'meeting';
