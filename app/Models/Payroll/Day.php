@@ -35,14 +35,14 @@ class Day extends Model
     }
 
     private function getHours($timepunches){
-            
+            $hours = 0;
         foreach($timepunches as $timepunch){
             if ( empty ( $timepunch->clock_out ) ) {
                 $timepunch->clock_out = Carbon::now();
             }
-            $hours = 0;
-            $hours += $timepunch->calulate();
-            $timepunch->readableHours = $this->readableTime($hours);
+            $currentHours = 0;
+            $hours += $currentHours = $timepunch->calulate();
+            $timepunch->readableHours = $this->readableTime($currentHours);
             $timepunch->label = $timepunch->reason;
             $timepunch->start = $timepunch->clock_in->toDayDateTimeString();
             $timepunch->end = $timepunch->clock_out->toDayDateTimeString();
