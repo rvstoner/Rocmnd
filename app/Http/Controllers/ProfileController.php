@@ -33,6 +33,8 @@ class ProfileController extends Controller
         }])->with('roles')->findOrFail($id);
 
         $user->getHours('range', $startOfPeriod, $endOfPeriod);
+
+        // dd($user);
         return view('profile.show', compact('user'));
     }
 

@@ -195,6 +195,11 @@ class User extends Authenticatable
             $Query->latest('shift_date')->where('clock_out', NULL);
         });
     }
+
+    public function scopeIsActive($query)
+    {
+        return $query->where('active', 1);
+    }
     
     public function scopeHasSameTeam($query)
     {

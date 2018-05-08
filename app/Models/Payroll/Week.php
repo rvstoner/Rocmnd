@@ -23,6 +23,12 @@ class Week extends Model
         if($this->hours < 0){
             $this->hours = 0;
         }
+        $this->readableHours = $this->readableTime($this->hours);
+        $this->readableOvertime = $this->readableTime($this->overtime);
+        $this->readableRollover = $this->readableTime($this->rollover);
+        $this->start = $this->start->toFormattedDateString();
+        $this->end = $this->end->toFormattedDateString();
+        $this->label = 'weeks';
     }
 
     public function breakIntoDays($date)
@@ -71,6 +77,11 @@ class Week extends Model
             return true;
         }
         return false;
-    }    
+    }  
+
+    private function readableTime($seconds) {
+      $t = round($seconds);
+      return sprintf('%02d:%02d', ($t/3600),($t/60%60));
+    }
     
 }

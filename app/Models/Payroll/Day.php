@@ -22,23 +22,46 @@ class Day extends Model
     	if (!empty($date)){
     		$this->start = $date;    		
     	} 
-    	$this->timepunches = $timepunches; 
-    	$this->breakIntoShifts();
-    	return $this->hours;
+    	$this->timepunches = $timepunches;
+        $hours = $this->getHours($timepunches); 
+        $this->readableHours = $this->readableTime($hours);
+        $this->label = $this->start->copy()->format('l');
+        $this->end = $this->start->copy()->format('\\of F');
+        $this->start = $this->start->copy()->format('jS');
+         $this->readableOvertime = '';
+        $this->readableRollover = '';
+
+    	return $hours;
     }
 
-    public function breakIntoShifts()
-    {
-        $this->shifts = collect([]);
-        $x = 1;
-        $hours = collect([0]);
-        foreach($this->timepunches as $timepunch){
-            $shift = new Shift();
-            $shift->start = $this->start; 
-            $hours->push($shift->calulate($timepunch));
-            $this->shifts->push($shift);
+    private function getHours($timepunches){
+            
+        foreach($timepunches as $timepunch){
+            if ( empty ( $timepunch->clock_out ) ) {
+                $timepunch->clock_out = Carbon::now();
+            }
+            $hours = 0;
+            $hours += $timepunch->calulate();
+            $timepunch->readableHours = $this->readableTime($hours);
+            $timepunch->label = $timepunch->reason;
+            $timepunch->start = $timepunch->clock_in->toDayDateTimeString();
+            $timepunch->end = $timepunch->clock_out->toDayDateTimeString();
+            $timepunch->hoursLabel = 'Hours';
+            $timepunch->rolloverLabel = 'Shift';
+            $timepunch->overtimeLabel = 'Edited';
+            $timepunch->readableOvertime = ($timepunch->edited ? 'Yes' : 'No');
+            $timepunch->readableRollover = $timepunch->shift;
+
+
         }
-        $this->hours = $hours->sum();
+
+        return $hours;
     }
+
+    private function readableTime($seconds) {
+      $t = round($seconds);
+      return sprintf('%02d:%02d', ($t/3600),($t/60%60));
+    }
+
 
 }

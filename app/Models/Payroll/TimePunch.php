@@ -133,13 +133,27 @@ class TimePunch extends Model
     private function setUpClockOut($timepunch)
     {
         $shift = $this->setShiftTimes($timepunch);
-        if($this->checkIfSameShift($shift)){
-            $this->processClockOut($timepunch, $this->roundTime(Carbon::now()));
+        if($this->clockoutIsNextDay($timepunch)){
+            $this->nextDay($timepunch);
         }else{
-            $this->nextShift($timepunch, $shift);
+            $this->processClockOut($timepunch, $this->roundTime(Carbon::now()));
         }
+        // if($this->checkIfSameShift($shift)){
+        //     $this->processClockOut($timepunch, $this->roundTime(Carbon::now()));
+        // }else{
+        //     $this->nextShift($timepunch, $shift);
+        // }
                   
     }
+
+    private function clockoutIsNextDay($timePunch){
+        $shifts = $this->getShifts();
+        $shift = $shifts->firstWhere('shift', 1);
+        $startOfNextDAy = $timePunch->shift_date->copy()->hour($shift->shift_start)->addDay();
+        return $startOfNextDAy->lte($this->roundTime(Carbon::now()));
+    }
+
+    
 
     private function setShiftTimes($timepunch)
     {
@@ -165,6 +179,22 @@ class TimePunch extends Model
         $timepunch->save();
         $cacheKey = 'clockin_' . auth()->user()->id;
         Cache::put($cacheKey, false, 60);
+    }
+
+    private function nextDay($timePunch){
+        $shifts = $this->getShifts();
+        $shift = $shifts->firstWhere('shift', 1);
+        $startOfNextDAy = $timePunch->shift_date->copy()->hour($shift->shift_start)->addDay();
+        $this->processClockOut($timePunch, $startOfNextDAy);
+        $newTimepunch = new TimePunch();
+        $newTimepunch->clock_in = $timePunch->clock_out;
+        $newTimepunch->reason = $timePunch->reason;
+        $newTimepunch->shift = 1;
+        $newTimepunch->user_id = $timePunch->user_id;
+        $newTimepunch->shift_date = $timePunch->clock_out->copy()->startOfDay();
+        $newTimepunch->save();
+        $this->setUpClockOut($newTimepunch);
+
     }
 
      public function nextShift($timepunch, $shift)

@@ -1,13 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Payroll\{TimePunch, Team, TimePunchEdits, Period};
-
 class PayrollController extends Controller
 {
     public function __construct()
@@ -28,11 +25,9 @@ class PayrollController extends Controller
             $clockin->save();
         }
         $cacheKey = 'clockin_' . auth()->user()->id;
-        Cache::put($cacheKey, true, 60);    	
-
+        Cache::put($cacheKey, true, 60);        
         return back();
     }
-
     public function clockout()
     {
         if(auth()->user()->getClockinStatus()){
@@ -40,37 +35,35 @@ class PayrollController extends Controller
             $timePunch->clockout();
         }
         return back();
-        // return Redirect::back()->with('error_code', 5);
-        // @if(!empty(Session::get('error_code')) && Session::get('error_code') == 5)
-        // <script>
-        // $(function() {
-        //   $('#myModal').modal('show');
-        // });
-        // </script>
-        // @endif
     }
-
     public function index(Request $request)
     {
+      $start = Carbon::now()->subMonth();
     
-        $users = User::with(['timepunches', 'team'])->filter($request, $this->getFilters())->hasSameTeam()->get();
-
-        foreach($users as $user){
-            $user->getHours();
-        }
-        $teams = $users->groupBy('team_id');
+      $teams = Team::with([
+        'users' => function ($q) use ($start){
+          $q->with(['timepunches' => function ($q) use ($start) {
+            $q->where('shift_date', '>', $start);
+          }])->isActive()->orderBy('last_name');
+        }])->hasSameTeam()->get();
         
+        foreach($teams as $team){
+          foreach($team->users as $user){
+            $user->getHours();
+            // dd($user->toJson());       
+          }
+        }
+        $teams = $teams->toJson();
+        // dd($teams);
         return view('manage.timesheets.index', compact('teams'));
         
     }
-
     protected function getFilters()
     {
         return [
             //
         ];
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -79,11 +72,8 @@ class PayrollController extends Controller
     public function create()
     {
         $users = User::hasSameTeam()->get();
-
         return view('manage.timesheets.create', compact('users'));
-
     } 
-
     /**
      * Store a newly created resource in storage.
      *
@@ -103,7 +93,6 @@ class PayrollController extends Controller
           ]);
         
         $clockin = new Carbon($request->clockin_date . ' ' . $request->clockin_time);        
-
         $timepunch = new TimePunch;
         $timepunch->clock_in = $timepunch->roundTime($clockin);
         $timepunch->user_id = $request->user;
@@ -116,7 +105,6 @@ class PayrollController extends Controller
             $clockout = new Carbon($request->clockout_date . ' ' . $request->clockout_time);
             $timepunch->clockout($clockout);
         }
-
         $timepunchedits = new TimePunchEdits();
         $timepunchedits->clock_in = $timepunch->clock_in;
         $timepunchedits->clock_out = $timepunch->clock_out;
@@ -124,11 +112,8 @@ class PayrollController extends Controller
         $timepunchedits->user_id = auth()->user()->id;
         $timepunchedits->reason = $timepunch->reason;
         $timepunchedits->save();
-
-
         return back();
     }
-
     /**
      * Display the specified resource.
      *
@@ -138,14 +123,11 @@ class PayrollController extends Controller
     public function show($id)
     {
         $timepunch = TimePunch::where('id', $id)->with('user')->first();
-
         if($timepunch->edited){
             $timepunchedit = TimePunchEdits::where('time_punch_id', $id)->with('user')->first();
         }
-
         return view('timesheets.show',compact('timepunch', 'timepunchedit'));
     }
-
      /**
      * Show the form for editing the specified resource.
      *
@@ -155,11 +137,8 @@ class PayrollController extends Controller
     public function edit($id)
     {
         $timepunch = TimePunch::where('id', $id)->with('user')->first();
-
         return view('manage.timesheets.edit',compact('timepunch'));
-
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -177,11 +156,9 @@ class PayrollController extends Controller
             'clockout_time' => 'required_with:clockout_date',            
           ]);
         $userid = auth()->user()->id;
-
         $timepunch = TimePunch::where('id', $id)->first();
         $oldClockin = $timepunch->clock_in;    
         $oldClockout = $timepunch->clock_out; 
-
         if(!empty($request->clockin_date)){
             $timepunch->clock_in = new Carbon($request->clockin_date . ' ' . $request->clockin_time);
             $timepunch->shift_date = $timepunch->setShiftDate($timepunch->clock_in);
@@ -199,7 +176,6 @@ class PayrollController extends Controller
             'reason' => $request->reason,
             'time_punch_id' => $timepunch->id
         ]);
-
         return redirect()->route('manage.dashboard');
     }
     
@@ -214,19 +190,16 @@ class PayrollController extends Controller
         $period = new Period();
         $period->getLastPeriod();
         $startOfPeriod = $period->start->startOfWeek();
-
         $endOfPeriod = Carbon::now();
         // $endOfPeriod = $period->end;
-
         $user = User::with(['timepunches' => function ($qurey) use ($startOfPeriod, $endOfPeriod){
             $qurey->whereBetween('shift_date', [$startOfPeriod, $endOfPeriod])->
                     orderBy('clock_in', 'asc');
         }])->findOrFail($id);
-
         $user->getHours();
-        return view('manage.timesheets.user', compact('user'));
+        $userJson = $user->toJson();
+        return view('manage.timesheets.user', compact('user', 'userJson'));
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -237,5 +210,4 @@ class PayrollController extends Controller
     {
         //
     }
-
 }

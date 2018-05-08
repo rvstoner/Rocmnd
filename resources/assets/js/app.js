@@ -22,6 +22,15 @@ defaultIconPack: 'fa'
  */
 
 Vue.component('slug-widget', require('./components/slugWidget.vue'));
+Vue.component('team-list', require('./components/payroll/teamList.vue'));
+Vue.component('user-list', require('./components/payroll/userList.vue'));
+Vue.component('week-list', require('./components/payroll/weekList.vue'));
+Vue.component('day-list', require('./components/payroll/dayList.vue'));
+Vue.component('timepunch-list', require('./components/payroll/timepunchList.vue'));
+Vue.component('user-detail', require('./components/payroll/userDetail.vue'));
+Vue.component('week-detail', require('./components/payroll/weekDetail.vue'));
+Vue.component('day-detail', require('./components/payroll/dayDetail.vue'));
+Vue.component('timepunch-detail', require('./components/payroll/timepunchDetail.vue'));
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 // const app = new Vue({

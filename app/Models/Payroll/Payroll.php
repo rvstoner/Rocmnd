@@ -27,7 +27,8 @@ class Payroll extends Model
 
     public function lastPeriod($user, $date, $enddate)
     {
-        $this->period = $period = new Period();
+        $this->periods = $period = new Period();
+        $this->label = 'Payroll';
         $period->getLastPeriod();
         $period->timepunches = $user->timepunches->where('shift_date', '>=', $period->start->copy()->startOfWeek())->where('shift_date', '<=', $period->end);
         $period->calulate();
@@ -35,10 +36,13 @@ class Payroll extends Model
 
     public function range($user, $date, $enddate)
     {
-        $this->period = $period = new Period();
+        $this->periods = $period = new Period();
+        $this->label = 'Payroll';
         $period->start = $date->copy()->startOfWeek();
         $period->end = $enddate;
         $period->timepunches = $user->timepunches->where('shift_date', '>=', $period->start)->where('shift_date', '<=', $period->end);
+        $this->startdate = $period->start->toDateString();
+        $this->enddate = $period->end->toDateString();
         $period->calulate();
     }
 

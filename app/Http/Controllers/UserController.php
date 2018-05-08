@@ -1,6 +1,5 @@
 <?php
 namespace App\Http\Controllers;
-
 use DB;
 use Hash;
 use Input;
@@ -123,7 +122,6 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-
       $this->validateWith([
         'first_name' => 'required|max:255',
         'last_name' => 'required|max:255',
@@ -162,7 +160,6 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
       }
       $user->save();
-
       $user->syncRoles(explode(',', $request->roles));
       LaraFlash::new()->content('Successfully updated user.')->type('success')->priority(5);
       return redirect()->route('users.show', $id);
